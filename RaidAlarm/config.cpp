@@ -72,6 +72,7 @@ class cfgVehicles
 		absorbency=1;
 		itemSize[]={2,3};
 		rotationFlags=16;
+		hitpoints=150;
 	};
 	class RaidAlarm_Bell : RaidAlarm_Base
 	{
@@ -81,7 +82,7 @@ class cfgVehicles
 		model="RaidAlarm\data\Bell\AlarmBell.p3d";
 		isMeleeWeapon=1;
 		itemBehaviour = 1;
-		weight=2000;
+		weight=1800;
 		absorbency=1;
 		itemSize[]={2,3};
 		rotationFlags=16;
@@ -96,19 +97,50 @@ class cfgVehicles
 		itemBehaviour = 1;
 		weight=20000;
 		absorbency=1;
+		hitpoints=6000;
 		itemSize[]={10,16};
+		physLayer = "item_large";
+		attachments[] = {"TruckBattery","DishAttachment"};
+		carveNavmesh = 1;
+		heavyItem = 1;
+		class EnergyManager
+		{
+			hasIcon = 1;
+			autoSwitchOff = 0;
+			energyUsagePerSecond = 0.01;
+			plugType = 5;
+			attachmentAction = 1;
+		};
+		hiddenSelectionsTextures[]=
+		{
+			"RaidAlarm\data\ServerRack\Textures\Radio_server_co.paa"
+		};
+		hiddenSelectionsMaterials[]=
+		{
+			"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+		};
 	};
 	class RaidAlarm_Dish : Inventory_Base
 	{
 		scope=2;
-		displayName="Raid Alarm Server";
+		displayName="Raid Alarm Stat Dish";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
 		isMeleeWeapon=1;
 		itemBehaviour = 1;
-		weight=20000;
+		weight=2000;
 		absorbency=1;
+		hitpoints=150;
 		itemSize[]={3,6};
+		inventorySlot[] = {"DishAttachment"};
+		hiddenSelectionsTextures[]=
+		{
+			"RaidAlarm\data\Dish Attachment\Textures\Antenna_co.paa"
+		};
+		hiddenSelectionsMaterials[]=
+		{
+			"RaidAlarm\data\Dish Attachment\Textures\Antenna.rvmat"
+		};
 	};
 };
 
@@ -137,22 +169,40 @@ class CfgSoundShaders
 	{
 		samples[]={
 			{
-				"KeyCardDoor\Data\Sounds\bunkerwarning",
+				"RaidAlarm\data\Sounds\Bell",
 				1
 			}
 		};
-		volume=1.6;
-		range=1200;
+		volume=1.9;
+		range=1100;
 	};
 	class RaidAlarmBellShortRange_SoundShader: baseCharacter_SoundShader
 	{
 		samples[]={
 			{
-				"KeyCardDoor\Data\Sounds\bunkerwarning",
+				"RaidAlarm\data\Sounds\Bell",
 				1
 			}
 		};
-		volume=1.2;
-		range=600;
+		volume=1.6;
+		range=500;
+	};
+};
+class CfgSlots
+{
+	class Slot_DishAttachment
+	{
+		name = "DishAttachment";
+		displayName = "Sat Dish";
+		ghostIcon = "missing";
+	};
+};
+class CfgNonAIVehicles
+{
+	class ProxyBaseBuilding;
+	class ProxyDishAttachment: ProxyBaseBuilding
+	{
+		model = "\RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
+		inventorySlot[] = {"DishAttachment"};
 	};
 };
