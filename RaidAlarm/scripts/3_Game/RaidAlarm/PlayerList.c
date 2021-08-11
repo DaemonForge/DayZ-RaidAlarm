@@ -36,13 +36,22 @@ class RaidAlarmPlayers extends Managed {
 		m_Players.Clear();
 	}
 	
-	void RemovePlayer(string guid){
+	bool RemovePlayer(string guid){
 		if (!m_Players){
 			m_Players  = new TStringMap;
 		}
 		if (m_Players.Contains(guid)){
 			m_Players.Remove(guid);
+			return true;
 		}
+		return false;
+	}
+	
+	bool CheckPlayer(string guid){
+		if (!m_Players){
+			return false;
+		}
+		return m_Players.Contains(guid);
 	}
 	
 }

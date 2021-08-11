@@ -56,3 +56,103 @@ class CfgMods
 		};
 	};
 };
+
+class cfgVehicles
+{
+	class Inventory_Base;
+	
+	class RaidAlarm_Base : Inventory_Base
+	{
+		scope=2;
+		displayName="Raid Alarm Base";
+		descriptionShort="RaidAlarm";
+		model="RaidAlarm\data\Bell\AlarmBell.p3d";
+		itemBehaviour = 1;
+		weight=2000;
+		absorbency=1;
+		itemSize[]={2,3};
+		rotationFlags=16;
+	};
+	class RaidAlarm_Bell : RaidAlarm_Base
+	{
+		scope=2;
+		displayName="Raid Alarm";
+		descriptionShort="RaidAlarm";
+		model="RaidAlarm\data\Bell\AlarmBell.p3d";
+		isMeleeWeapon=1;
+		itemBehaviour = 1;
+		weight=2000;
+		absorbency=1;
+		itemSize[]={2,3};
+		rotationFlags=16;
+	};
+	class RaidAlarm_Server : RaidAlarm_Base
+	{
+		scope=2;
+		displayName="Raid Alarm Server";
+		descriptionShort="Raid Alarm";
+		model="RaidAlarm\data\ServerRack\ServerRack.p3d";
+		isMeleeWeapon=1;
+		itemBehaviour = 1;
+		weight=20000;
+		absorbency=1;
+		itemSize[]={10,16};
+	};
+	class RaidAlarm_Dish : Inventory_Base
+	{
+		scope=2;
+		displayName="Raid Alarm Server";
+		descriptionShort="Raid Alarm";
+		model="RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
+		isMeleeWeapon=1;
+		itemBehaviour = 1;
+		weight=20000;
+		absorbency=1;
+		itemSize[]={3,6};
+	};
+};
+
+class CfgSoundSets
+{
+	class baseCharacter_SoundSet;
+	class RaidAlarmBellLongRange_SoundSet: baseCharacter_SoundSet
+	{
+		soundShaders[]=
+		{
+			"RaidAlarmBellLongRange_SoundShader"
+		};
+	};
+	class RaidAlarmBellShortRange_SoundSet: baseCharacter_SoundSet
+	{
+		soundShaders[]=
+		{
+			"RaidAlarmBellShortRange_SoundShader"
+		};
+	};
+};
+class CfgSoundShaders
+{
+    class baseCharacter_SoundShader;
+	class RaidAlarmBellLongRange_SoundShader: baseCharacter_SoundShader
+	{
+		samples[]={
+			{
+				"KeyCardDoor\Data\Sounds\bunkerwarning",
+				1
+			}
+		};
+		volume=1.6;
+		range=1200;
+	};
+	class RaidAlarmBellShortRange_SoundShader: baseCharacter_SoundShader
+	{
+		samples[]={
+			{
+				"KeyCardDoor\Data\Sounds\bunkerwarning",
+				1
+			}
+		};
+		volume=1.2;
+		range=600;
+	};
+};
