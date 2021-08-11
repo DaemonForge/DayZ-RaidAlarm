@@ -27,6 +27,7 @@ class LinkAndAddDiscord extends ActionInteractBase
 			int curTime = GetGame().GetTime();
 			if (curTime > m_NextDiscordCheck && !GetDayZGame().DiscordUser()){
 				m_NextDiscordCheck = curTime + 5000;
+				Print("Requesting a refresh of discord info");
 				UApi().ds().GetUser(GetDayZGame().GetSteamId(), GetDayZGame(), "CBCacheDiscordInfo");
 			}
 			return true;
