@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{3E1FB631AD16FD4E}RaidAlarm/data/Images/discord.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate -1096471798
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "discord.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

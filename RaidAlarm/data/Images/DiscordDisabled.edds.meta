@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{8C73AA015B0057A7}RaidAlarm/data/Images/DiscordDisabled.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate -1738183926
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "DiscordDisabled.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

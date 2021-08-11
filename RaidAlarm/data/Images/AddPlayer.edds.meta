@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{3C6096F97AD88786}RaidAlarm/data/Images/AddPlayer.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate -1775932662
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "AddPlayer.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

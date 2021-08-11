@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{10F55EDD2DAB807F}YNRLoadingScreen/gui/fonts/UniSansHeavy/UniSansHeavy12.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate 101542520
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "UniSansHeavy12.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

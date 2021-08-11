@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{13611C46E7DC6C19}RaidAlarm/data/Images/RemovePlayer.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate -1406833910
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "RemovePlayer.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

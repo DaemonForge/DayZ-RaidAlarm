@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{7248A589840A368E}RaidAlarm/data/Images/SoundOff.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate -1574606070
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "SoundOff.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}
