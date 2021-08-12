@@ -60,6 +60,39 @@ class CfgMods
 class cfgVehicles
 {
 	class Inventory_Base;
+	class TruckBattery: Inventory_Base
+	{
+		hiddenSelections[]=
+		{
+			"zbytek"
+		};
+	}
+	
+	class ServerBattery: TruckBattery
+	{
+		hiddenSelections[]=
+		{
+			"zbytek"
+		};
+		hiddenSelectionsTextures[]=
+		{
+			"RaidAlarm\data\ServerRack\Textures\Battery\ServerBattery_co.paa"
+		};
+		class EnergyManager
+		{
+			hasIcon=1;
+			switchOnAtSpawn=1;
+			isPassiveDevice=1;
+			convertEnergyToQuantity=1;
+			energyStorageMax=1500;
+			energyAtSpawn=1500;
+			reduceMaxEnergyByDamageCoef=0.5;
+			powerSocketsCount=1;
+			plugType=4;
+			compatiblePlugTypes[]={8};
+			attachmentAction=2;
+		};
+	}
 	
 	class RaidAlarm_Base : Inventory_Base
 	{

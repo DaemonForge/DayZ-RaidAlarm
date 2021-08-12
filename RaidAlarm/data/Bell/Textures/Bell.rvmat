@@ -1,14 +1,14 @@
-ambient[]={1,1,1,1};
-diffuse[]={1,1,1,1};
+ambient[]={0.50000089,0.50000089,0.50000089,1};
+diffuse[]={0.50000089,0.50000089,0.50000089,1};
 forcedDiffuse[]={0,0,0,1};
 emmisive[]={0,0,0,0};
-specular[]={1,1,1,1};
-specularPower=40;
+specular[]={0.29600078,0.29600078,0.29600078,1};
+specularPower=100;
 PixelShaderID="Super";
 VertexShaderID="Super";
 class Stage1
 {
-	texture="RaidAlarm\data\Dish Attachment\Textures\Antenna_nohq.paa";
+	texture="RaidAlarm\data\Bell\Textures\Bell_nohq.paa";
 	uvSource="tex";
 	class uvTransform
 	{
@@ -44,7 +44,7 @@ class Stage3
 };
 class Stage4
 {
-	texture="RaidAlarm\data\Dish Attachment\Textures\Antenna_as.paa";
+	texture="RaidAlarm\data\Bell\Textures\Bell_as.paa";
 	uvSource="tex";
 	class uvTransform
 	{
@@ -56,7 +56,7 @@ class Stage4
 };
 class Stage5
 {
-	texture="RaidAlarm\data\Dish Attachment\Textures\Antenna_smdi.paa";
+	texture="RaidAlarm\data\Bell\Textures\Bell_smdi.paa";
 	uvSource="tex";
 	class uvTransform
 	{
