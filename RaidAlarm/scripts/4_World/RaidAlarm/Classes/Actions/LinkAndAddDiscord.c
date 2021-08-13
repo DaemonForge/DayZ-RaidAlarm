@@ -20,9 +20,9 @@ class LinkAndAddDiscord extends ActionInteractBase
 
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item ){
-		RaidAlarm_Base raidalarm = RaidAlarm_Base.Cast(target.GetObject());
+		RaidAlarm_Base raidalarm;
 		PlayerBase thePlayer = PlayerBase.Cast(player);
-		if (raidalarm && thePlayer && thePlayer.GetIdentity()){
+		if ((Class.CastTo(raidalarm, target.GetObject()) || Class.CastTo(raidalarm, target.GetParent()))  && thePlayer && thePlayer.GetIdentity()){
 			IsMember = raidalarm.RACheckPlayer(thePlayer.GetIdentity().GetId());
 			int curTime = GetGame().GetTime();
 			if (curTime > m_NextDiscordCheck && GetGame().IsClient() && !GetDayZGame().DiscordUser()){

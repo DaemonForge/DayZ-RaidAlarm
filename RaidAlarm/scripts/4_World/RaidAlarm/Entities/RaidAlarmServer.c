@@ -1,13 +1,5 @@
 
-class RaidAlarm_ServerBattery extends TruckBattery{
-
-	
-	override void OnStoreSave( ParamsWriteContext ctx )
-	{   
-		super.OnStoreSave( ctx );
-		Print("[RAIDALARM] Saving Battery Debug Ammount Left + " + GetCompEM().GetEnergy());
-	}
-}
+class RaidAlarm_ServerBattery extends TruckBattery{}
 class RaidAlarm_ServerCluster extends ItemBase{}
 class RaidAlarm_Dish extends ItemBase{}
 class RaidAlarm_CommunicationsArray extends ItemBase{
@@ -22,7 +14,7 @@ class RaidAlarm_CommunicationsArray extends ItemBase{
 class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	bool HasDish(){
-		if (RaidAlarm_ServerCluster.Cast(FindAttachmentBySlotName("DishAttachment"))){
+		if (RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"))){
 			return true;
 		}
 		return false;
@@ -44,15 +36,17 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	
 	
+	protected int TimeOfLastDrain = 0;
+	
 	protected int slot_ServerCOMSArray = InventorySlots.INVALID;
 	protected int slot_ServerCluster = InventorySlots.INVALID;
+	protected int slot_ServerBattery = InventorySlots.INVALID;
 	
 	void RaidAlarm_PowerSuply(){
-	
 		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
 		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
+		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
 	}
-	
 	
 	bool HasProxyParts()
 	{
@@ -69,7 +63,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 		
 		if (slot_name == "ServerBattery" && item){
 			item.GetCompEM().SwitchOff();
-			this.GetCompEM().SwitchOff();
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOff);
 			SetSynchDirty();
 		}
 	}
@@ -79,9 +73,8 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 		super.EEItemAttached(item, slot_name);
 		
 		if (slot_name == "BatteryServer" && item){
-			
 			item.GetCompEM().SwitchOn();
-			this.GetCompEM().SwitchOn();
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOn);
 			SetSynchDirty();
 		}
 	}
@@ -142,7 +135,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	}
 	
 	bool CanSetOffAlarm(){	
-		return (HasServerCluster() && HasCommunicationArray() && HasDish() && IsWorking());
+		return (HasServerCluster() && HasCommunicationArray() && HasDish() && GetCompEM().CanWork(1));
 	}
 
 	override bool CanPutInCargo( EntityAI parent )
@@ -158,4 +151,37 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	override int GetRARadius(){
 		return 60;
 	}
+	
+	
+	override void AfterStoreLoad()
+	{	
+		super.AfterStoreLoad();	
+		TimeOfLastDrain = GetGame().GetTime();
+	}
+	
+	RaidAlarm_ServerBattery GetServerBattery(){
+		return RaidAlarm_ServerBattery.Cast(GetInventory().FindAttachment(slot_ServerBattery));
+	}
+	
+	override void OnStoreSave( ParamsWriteContext ctx )
+	{   
+		int curtime = GetGame().GetTime();
+		if (GetInventory()){
+			RaidAlarm_ServerBattery batt = GetServerBattery();
+			if (GetGame().IsServer() && batt && TimeOfLastDrain != 0 && curtime > TimeOfLastDrain){
+				float difsecs = Math.Floor((curtime - TimeOfLastDrain) / 1000);
+				TimeOfLastDrain = curtime;
+				float eReduction = difsecs * 0.01;
+				float curEnergy = batt.GetCompEM().GetEnergy();
+				if (curEnergy > eReduction){
+					batt.GetCompEM().AddEnergy(-eReduction);
+				} else {
+					batt.GetCompEM().SetEnergy(0);
+				}
+				ConvertEnergyToQuantity();
+			}
+		}
+		super.OnStoreSave( ctx );
+	}
+	
 }

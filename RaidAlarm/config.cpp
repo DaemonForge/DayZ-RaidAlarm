@@ -76,6 +76,7 @@ class cfgVehicles
 	
 	class RaidAlarm_ServerBattery: TruckBattery
 	{
+		displayName="Server Battery";
 		inventorySlot[] = {"BatteryServer"};
 		hiddenSelections[]=
 		{
@@ -91,8 +92,8 @@ class cfgVehicles
 			switchOnAtSpawn=1;
 			isPassiveDevice=1;
 			convertEnergyToQuantity=1;
-			energyStorageMax=7000;
-			energyAtSpawn=5000;
+			energyStorageMax=8000;
+			energyAtSpawn=6048;
 			reduceMaxEnergyByDamageCoef=0.5;
 			powerSocketsCount=1;
 			plugType=1;
@@ -124,6 +125,16 @@ class cfgVehicles
 		weight=1800;
 		itemSize[]={2,3};
 		rotationFlags=16;
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 300;
+				};
+			};
+		};
 	};
 	class RaidAlarm_Server : RaidAlarm_Base
 	{
@@ -131,9 +142,9 @@ class cfgVehicles
 		displayName="Raid Alarm Server";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\FullServerRack.p3d";
-		itemBehaviour = 1;
+		itemBehaviour = 2;
 		weight=25000;
-		hitpoints=6000;
+		hitpoints=8000;
 		itemSize[]={10,14};
 		physLayer = "item_large";
 		attachments[] = {"BatteryServer","DishAttachment"};
@@ -143,6 +154,7 @@ class cfgVehicles
 		class EnergyManager
 		{
 			hasIcon = 1;
+			switchOnAtSpawn=1;
 			energyUsagePerSecond = 0.01;
 			plugType = 1;
 			attachmentAction = 1;
@@ -155,6 +167,16 @@ class cfgVehicles
 		{
 			"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
 		};
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 8000;
+				};
+			};
+		};
 	};
 	class RaidAlarm_PowerSuply : RaidAlarm_Base
 	{
@@ -162,7 +184,7 @@ class cfgVehicles
 		displayName="Raid Alarm Power Supply";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerPowerSupply.p3d";
-		itemBehaviour = 1;
+		itemBehaviour = 0;
 		weight=8000;
 		hitpoints=6000;
 		slopeTolerance = 0.4;
@@ -175,10 +197,20 @@ class cfgVehicles
 		class EnergyManager
 		{
 			hasIcon = 1;
-			isPassiveDevice = 1;
+			switchOnAtSpawn=1;
 			energyUsagePerSecond = 0.01;
 			plugType = 1;
 			attachmentAction = 1;
+		};
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 6000;
+				};
+			};
 		};
 	};
 	class RaidAlarm_ServerCluster : Inventory_Base
@@ -187,7 +219,7 @@ class cfgVehicles
 		displayName="Raid Alarm Server Cluster";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerCluster.p3d";
-		itemBehaviour = 1;
+		itemBehaviour = 0;
 		weight=7000;
 		hitpoints=6000;
 		itemSize[]={9,4};
@@ -195,6 +227,16 @@ class cfgVehicles
 		inventorySlot[] = {"ServerCluster"};
 		carveNavmesh = 1;
 		heavyItem = 1;
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 6000;
+				};
+			};
+		};
 	};
 	class RaidAlarm_CommunicationsArray : Inventory_Base
 	{
@@ -202,7 +244,7 @@ class cfgVehicles
 		displayName="Raid Alarm Communcation Array";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
-		itemBehaviour = 1;
+		itemBehaviour = 0;
 		weight=8000;
 		hitpoints=6000;
 		itemSize[]={9,5};
@@ -211,6 +253,16 @@ class cfgVehicles
 		attachments[] = {"DishAttachment"};
 		carveNavmesh = 1;
 		heavyItem = 1;
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 6000;
+				};
+			};
+		};
 	};
 	class RaidAlarm_Dish : Inventory_Base
 	{
@@ -231,6 +283,16 @@ class cfgVehicles
 		hiddenSelectionsMaterials[]=
 		{
 			"RaidAlarm\data\Dish Attachment\Textures\Antenna.rvmat"
+		};
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints = 200;
+				};
+			};
 		};
 	};
 };
@@ -309,18 +371,18 @@ class CfgSlots
 };
 class CfgNonAIVehicles
 {
-	class ProxyBaseBuilding;
-	class ProxyDishAttachment: ProxyBaseBuilding
+	class ProxyAttachment;
+	class ProxyDishAttachment: ProxyAttachment
 	{
 		model = "\RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
 		inventorySlot[] = {"DishAttachment"};
 	};
-	class ProxyServerCluster: ProxyBaseBuilding
+	class ProxyServerCluster: ProxyAttachment
 	{
 		model = "\RaidAlarm\data\ServerRack\ServerCluster.p3d";
 		inventorySlot[] = {"ServerCluster"};
 	};
-	class ProxyServerCOMSArray: ProxyBaseBuilding
+	class ProxyServerCOMSArray: ProxyAttachment
 	{
 		model = "\RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
 		inventorySlot[] = {"ServerCOMSArray"};

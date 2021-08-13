@@ -33,6 +33,14 @@ class RaidAlarm_Base extends ItemBase {
 		Print("[RAIDALARM] On Work Start");
 	}
 	
+	void OnSwitchOn(){
+	
+	}
+	
+	void OnSwitchOff(){
+	
+	}
+	
 	override void OnWorkStop()
 	{
 		Print("[RAIDALARM] On Work Stop");
