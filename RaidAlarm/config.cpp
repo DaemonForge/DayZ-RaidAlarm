@@ -76,7 +76,7 @@ class cfgVehicles
 	
 	class RaidAlarm_ServerBattery: TruckBattery
 	{
-		inventorySlot[] = {"ServerBattery"};
+		inventorySlot[] = {"BatteryServer"};
 		hiddenSelections[]=
 		{
 			"zbytek"
@@ -91,12 +91,12 @@ class cfgVehicles
 			switchOnAtSpawn=1;
 			isPassiveDevice=1;
 			convertEnergyToQuantity=1;
-			energyStorageMax=5000;
+			energyStorageMax=7000;
 			energyAtSpawn=5000;
 			reduceMaxEnergyByDamageCoef=0.5;
 			powerSocketsCount=1;
-			plugType=4;
-			compatiblePlugTypes[]={8};
+			plugType=1;
+			compatiblePlugTypes[]={1};
 			attachmentAction=2;
 		};
 	}
@@ -136,15 +136,15 @@ class cfgVehicles
 		hitpoints=6000;
 		itemSize[]={10,14};
 		physLayer = "item_large";
-		attachments[] = {"ServerBattery","DishAttachment"};
+		attachments[] = {"BatteryServer","DishAttachment"};
 		carveNavmesh = 1;
 		heavyItem = 1;
+		energyResources[] = {{"power",8.0}};
 		class EnergyManager
 		{
 			hasIcon = 1;
-			autoSwitchOff = 0;
 			energyUsagePerSecond = 0.01;
-			plugType = 5;
+			plugType = 1;
 			attachmentAction = 1;
 		};
 		hiddenSelectionsTextures[]=
@@ -165,17 +165,19 @@ class cfgVehicles
 		itemBehaviour = 1;
 		weight=8000;
 		hitpoints=6000;
+		slopeTolerance = 0.4;
 		itemSize[]={9,5};
 		physLayer = "item_large";
-		attachments[] = {"ServerBattery","ServerCluster","ServerCOMSArray"};
+		attachments[] = {"BatteryServer","ServerCluster","ServerCOMSArray"};
 		carveNavmesh = 1;
 		heavyItem = 1;
+		energyResources[] = {{"power",8.0}};
 		class EnergyManager
 		{
 			hasIcon = 1;
-			autoSwitchOff = 0;
+			isPassiveDevice = 1;
 			energyUsagePerSecond = 0.01;
-			plugType = 5;
+			plugType = 1;
 			attachmentAction = 1;
 		};
 	};
@@ -297,9 +299,9 @@ class CfgSlots
 		displayName = "Communcation Array";
 		ghostIcon = "set:raidalarm_ghost image:ServerCOMSArray";
 	};
-	class Slot_ServerBattery
+	class Slot_BatteryServer
 	{
-		name = "ServerBattery";
+		name = "BatteryServer";
 		displayName = "Server Battery";
 		selection = "battery";
 		ghostIcon = "set:dayz_inventory image:carbattery";
