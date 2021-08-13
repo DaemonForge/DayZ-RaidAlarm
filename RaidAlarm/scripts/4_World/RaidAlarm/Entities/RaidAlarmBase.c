@@ -29,6 +29,84 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		return 60;
 	}
 }
+class RaidAlarm_ServerCluster extends ItemBase{
+
+}
+class RaidAlarm_CommunicationsArray extends ItemBase{
+	bool HasDish(){
+		if (RaidAlarm_ServerCluster.Cast(FindAttachmentBySlotName("DishAttachment"))){
+			return true;
+		}
+		return false;
+	}
+}
+class RaidAlarm_Dish extends ItemBase{
+	
+}
+class RaidAlarm_PowerSuply extends RaidAlarm_Base{
+	
+	bool HasAllRequiredParts(){
+		return (HasDish() && HasServerCluster());
+	}
+	
+	
+	bool HasDish(){
+		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(FindAttachmentBySlotName("ServerCluster"));
+		if (comarray && comarray.HasDish()){
+			return true;
+		}
+		return false;
+	}
+	
+	override bool CanReceiveAttachment( EntityAI attachment,int slotId )
+	{
+		if( !HasServerCluster() && attachment.IsInherited(RaidAlarm_CommunicationsArray))
+		{
+			return false;
+		}
+		return super.CanReceiveAttachment( attachment, slotId );
+	}
+	
+	bool HasServerCluster(){
+		if (RaidAlarm_ServerCluster.Cast(FindAttachmentBySlotName("ServerCluster"))){
+			return true;
+		}
+		return false;
+	}
+	
+	bool HasCommunicationArray(){
+		if (RaidAlarm_CommunicationsArray.Cast(FindAttachmentBySlotName("ServerCOMSArray"))){
+			return true;
+		}
+		return false;
+	}
+	
+	override bool CanReleaseAttachment (EntityAI attachment)
+	{
+		if( HasCommunicationArray() && attachment.IsInherited(RaidAlarm_ServerCluster)) {
+			return false;
+		}
+		return super.CanReleaseAttachment(attachment);
+	}
+	
+	override int GetMinTimeBetweenTiggers() {
+		return 90 * 1000;
+	}
+	
+	bool CanSetOffAlarm(){
+		return true;
+	}
+
+	override bool CanPutInCargo( EntityAI parent )
+	{
+		return (super.CanReceiveItemIntoCargo( item ) && !HasServerCluster() && !HasCommunicationArray());
+	}
+	
+	
+	override int GetRARadius(){
+		return 60;
+	}
+}
 
 class RaidAlarm_Base extends ItemBase {
 

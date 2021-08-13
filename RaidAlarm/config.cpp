@@ -25,9 +25,7 @@ class CfgMods
 		version = "1.0.0"; 
 		extra = 0;
 		type = "mod";
-		
-		dependencies[] = {"Game", "World", "Mission"};
-
+		dependencies[] = { "Game", "World", "Mission"};
 		class defs
 		{
 			
@@ -76,8 +74,9 @@ class cfgVehicles
 		};
 	}
 	
-	class ServerBattery: TruckBattery
+	class RaidAlarm_ServerBattery: TruckBattery
 	{
+		inventorySlot[] = {"ServerBattery"};
 		hiddenSelections[]=
 		{
 			"zbytek"
@@ -92,8 +91,8 @@ class cfgVehicles
 			switchOnAtSpawn=1;
 			isPassiveDevice=1;
 			convertEnergyToQuantity=1;
-			energyStorageMax=1500;
-			energyAtSpawn=1500;
+			energyStorageMax=5000;
+			energyAtSpawn=5000;
 			reduceMaxEnergyByDamageCoef=0.5;
 			powerSocketsCount=1;
 			plugType=4;
@@ -131,13 +130,13 @@ class cfgVehicles
 		scope=2;
 		displayName="Raid Alarm Server";
 		descriptionShort="Raid Alarm";
-		model="RaidAlarm\data\ServerRack\ServerRack.p3d";
+		model="RaidAlarm\data\ServerRack\FullServerRack.p3d";
 		itemBehaviour = 1;
-		weight=20000;
+		weight=25000;
 		hitpoints=6000;
-		itemSize[]={10,16};
+		itemSize[]={10,14};
 		physLayer = "item_large";
-		attachments[] = {"TruckBattery","DishAttachment"};
+		attachments[] = {"ServerBattery","DishAttachment"};
 		carveNavmesh = 1;
 		heavyItem = 1;
 		class EnergyManager
@@ -157,10 +156,64 @@ class cfgVehicles
 			"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
 		};
 	};
+	class RaidAlarm_PowerSuply : RaidAlarm_Base
+	{
+		scope=2;
+		displayName="Raid Alarm Power Supply";
+		descriptionShort="Raid Alarm";
+		model="RaidAlarm\data\ServerRack\ServerPowerSupply.p3d";
+		itemBehaviour = 1;
+		weight=8000;
+		hitpoints=6000;
+		itemSize[]={9,5};
+		physLayer = "item_large";
+		attachments[] = {"ServerBattery","ServerCluster","ServerCOMSArray"};
+		carveNavmesh = 1;
+		heavyItem = 1;
+		class EnergyManager
+		{
+			hasIcon = 1;
+			autoSwitchOff = 0;
+			energyUsagePerSecond = 0.01;
+			plugType = 5;
+			attachmentAction = 1;
+		};
+	};
+	class RaidAlarm_ServerCluster : Inventory_Base
+	{
+		scope=2;
+		displayName="Raid Alarm Server Cluster";
+		descriptionShort="Raid Alarm";
+		model="RaidAlarm\data\ServerRack\ServerCluster.p3d";
+		itemBehaviour = 1;
+		weight=7000;
+		hitpoints=6000;
+		itemSize[]={9,4};
+		physLayer = "item_large";
+		inventorySlot[] = {"ServerCluster"};
+		carveNavmesh = 1;
+		heavyItem = 1;
+	};
+	class RaidAlarm_CommunicationsArray : Inventory_Base
+	{
+		scope=2;
+		displayName="Raid Alarm Communcation Array";
+		descriptionShort="Raid Alarm";
+		model="RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
+		itemBehaviour = 1;
+		weight=8000;
+		hitpoints=6000;
+		itemSize[]={9,5};
+		physLayer = "item_large";
+		inventorySlot[] = {"ServerCOMSArray"};
+		attachments[] = {"DishAttachment"};
+		carveNavmesh = 1;
+		heavyItem = 1;
+	};
 	class RaidAlarm_Dish : Inventory_Base
 	{
 		scope=2;
-		displayName="Raid Alarm Stat Dish";
+		displayName="Raid Alarm Satillite Dish";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
 		itemBehaviour = 1;
@@ -230,25 +283,26 @@ class CfgSlots
 	{
 		name = "DishAttachment";
 		displayName = "Sat Dish";
-		ghostIcon = "set:raidalarm_ghost image:satDish";
+		ghostIcon = "set:raidalarm_ghost image:DishAttachment";
 	};
 	class Slot_ServerCluster
 	{
 		name = "ServerCluster";
 		displayName = "Server Cluster";
-		ghostIcon = "set:raidalarm_ghost image:serverCluster";
+		ghostIcon = "set:raidalarm_ghost image:ServerCluster";
 	};
-	class Slot_ServerCommunication
+	class Slot_ServerCOMSArray
 	{
-		name = "ServerCommunication";
+		name = "ServerCOMSArray";
 		displayName = "Communcation Array";
-		ghostIcon = "set:raidalarm_ghost image:serverCommunications";
+		ghostIcon = "set:raidalarm_ghost image:ServerCOMSArray";
 	};
-	class Slot_ServerPower
+	class Slot_ServerBattery
 	{
-		name = "ServerPower";
-		displayName = "Power Suply";
-		ghostIcon = "set:raidalarm_ghost image:serverPower";
+		name = "ServerBattery";
+		displayName = "Server Battery";
+		selection = "battery";
+		ghostIcon = "set:dayz_inventory image:carbattery";
 	};
 };
 class CfgNonAIVehicles
@@ -258,5 +312,15 @@ class CfgNonAIVehicles
 	{
 		model = "\RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
 		inventorySlot[] = {"DishAttachment"};
+	};
+	class ProxyServerCluster: ProxyBaseBuilding
+	{
+		model = "\RaidAlarm\data\ServerRack\ServerCluster.p3d";
+		inventorySlot[] = {"ServerCluster"};
+	};
+	class ProxyServerCOMSArray: ProxyBaseBuilding
+	{
+		model = "\RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
+		inventorySlot[] = {"ServerCOMSArray"};
 	};
 };

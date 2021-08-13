@@ -1,5 +1,5 @@
 ImageSetClass {
- Name "NewImageSet0"
+ Name "raidalarm_ghost"
  RefSize 1024 1024
  Textures {
   ImageSetTextureClass {
@@ -8,26 +8,26 @@ ImageSetClass {
   }
  }
  Images {
-  ImageSetDefClass serverCluster {
-   Name "serverCluster"
+  ImageSetDefClass ServerCluster {
+   Name "ServerCluster"
    Pos 0 0
    Size 512 512
    Flags 0
   }
-  ImageSetDefClass serverCommunications {
-   Name "serverCommunications"
+  ImageSetDefClass ServerCOMSArray {
+   Name "ServerCOMSArray"
    Pos 512 0
    Size 512 512
    Flags 0
   }
-  ImageSetDefClass serverPower {
-   Name "serverPower"
+  ImageSetDefClass ServerPower {
+   Name "ServerPower"
    Pos 0 512
    Size 512 512
    Flags 0
   }
-  ImageSetDefClass satDish {
-   Name "satDish"
+  ImageSetDefClass DishAttachment {
+   Name "DishAttachment"
    Pos 512 512
    Size 512 512
    Flags 0
