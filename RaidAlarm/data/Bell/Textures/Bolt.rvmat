@@ -44,7 +44,7 @@ class Stage3
 };
 class Stage4
 {
-	texture="RaidAlarm\data\Bell\Textures\Bolt_as.paa";
+	texture="RaidAlarm\data\Bell\Textures\Bell_as.paa";
 	uvSource="tex";
 	class uvTransform
 	{
@@ -56,7 +56,7 @@ class Stage4
 };
 class Stage5
 {
-	texture="RaidAlarm\data\Bell\Textures\Bolt_smdi.paa";
+	texture="RaidAlarm\data\Bell\Textures\Bell_smdi.paa";
 	uvSource="tex";
 	class uvTransform
 	{

@@ -42,7 +42,7 @@ class CfgMods
 				files[] = {
 					"RaidAlarm/scripts/3_Game"
 					};
-			}
+			};
 			
 			class worldScriptModule
 			{
@@ -50,7 +50,7 @@ class CfgMods
 				files[] = {
 					"RaidAlarm/scripts/4_World"
 					};
-			}
+			};
 
 			class missionScriptModule
 			{
@@ -72,7 +72,7 @@ class cfgVehicles
 		{
 			"zbytek"
 		};
-	}
+	};
 	
 	class RaidAlarm_ServerBattery: TruckBattery
 	{
@@ -100,7 +100,7 @@ class cfgVehicles
 			compatiblePlugTypes[]={1};
 			attachmentAction=2;
 		};
-	}
+	};
 	
 	class RaidAlarm_Base : Inventory_Base
 	{
