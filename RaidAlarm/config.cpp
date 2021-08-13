@@ -374,16 +374,19 @@ class CfgNonAIVehicles
 	class ProxyAttachment;
 	class ProxyDishAttachment: ProxyAttachment
 	{
+		scope=2;
 		model = "\RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
 		inventorySlot[] = {"DishAttachment"};
 	};
 	class ProxyServerCluster: ProxyAttachment
 	{
+		scope=2;
 		model = "\RaidAlarm\data\ServerRack\ServerCluster.p3d";
 		inventorySlot[] = {"ServerCluster"};
 	};
 	class ProxyServerCOMSArray: ProxyAttachment
 	{
+		scope=2;
 		model = "\RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
 		inventorySlot[] = {"ServerCOMSArray"};
 	};
