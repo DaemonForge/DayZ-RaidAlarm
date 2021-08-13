@@ -9,7 +9,7 @@ class LinkAndAddDiscord extends ActionInteractBase
 	}
 	
 	override string GetText(){
-		if (!GetDayZGame().DiscordUser()){
+		if (GetGame().IsClient() && !GetDayZGame().DiscordUser()){
 			return "Link/Check Discord";
 		}
 		if (IsMember){
@@ -25,9 +25,8 @@ class LinkAndAddDiscord extends ActionInteractBase
 		if (raidalarm && thePlayer && thePlayer.GetIdentity()){
 			IsMember = raidalarm.RACheckPlayer(thePlayer.GetIdentity().GetId());
 			int curTime = GetGame().GetTime();
-			if (curTime > m_NextDiscordCheck && !GetDayZGame().DiscordUser()){
+			if (curTime > m_NextDiscordCheck && GetGame().IsClient() && !GetDayZGame().DiscordUser()){
 				m_NextDiscordCheck = curTime + 5000;
-				Print("Requesting a refresh of discord info");
 				UApi().ds().GetUser(GetDayZGame().GetSteamId(), GetDayZGame(), "CBCacheDiscordInfo");
 			}
 			return true;
@@ -37,8 +36,8 @@ class LinkAndAddDiscord extends ActionInteractBase
 	
 	override void OnExecuteClient( ActionData action_data ){
 		if (!GetDayZGame().DiscordUser()){
-			GetGame().OpenURL( UApi().ds().Link() );
 			NotificationSystem.CreateNotification(new StringLocaliser("Link Opened"), new StringLocaliser("A link has opened for you to link your discord account"), "RaidAlarm\\data\\Images\\discord.paa", ARGB(240, 153, 101, 244));
+			GetGame().OpenURL( UApi().ds().Link() );
 		}
 	}
 	

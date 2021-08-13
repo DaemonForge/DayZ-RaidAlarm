@@ -30,6 +30,14 @@ class CfgMods
 
 		class defs
 		{
+			
+			class imageSets
+			{
+				files[] =
+				{
+					"RaidAlarm/data/Images/raidalarm_ghost.imageset"
+				};
+			};
 			class gameScriptModule
 			{
 				value = "";
@@ -102,10 +110,9 @@ class cfgVehicles
 		model="RaidAlarm\data\Bell\AlarmBell.p3d";
 		itemBehaviour = 1;
 		weight=2000;
-		absorbency=1;
 		itemSize[]={2,3};
 		rotationFlags=16;
-		hitpoints=150;
+		hitpoints=200;
 	};
 	class RaidAlarm_Bell : RaidAlarm_Base
 	{
@@ -116,7 +123,6 @@ class cfgVehicles
 		isMeleeWeapon=1;
 		itemBehaviour = 1;
 		weight=1800;
-		absorbency=1;
 		itemSize[]={2,3};
 		rotationFlags=16;
 	};
@@ -126,10 +132,8 @@ class cfgVehicles
 		displayName="Raid Alarm Server";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerRack.p3d";
-		isMeleeWeapon=1;
 		itemBehaviour = 1;
 		weight=20000;
-		absorbency=1;
 		hitpoints=6000;
 		itemSize[]={10,16};
 		physLayer = "item_large";
@@ -159,12 +163,11 @@ class cfgVehicles
 		displayName="Raid Alarm Stat Dish";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
-		isMeleeWeapon=1;
 		itemBehaviour = 1;
 		weight=2000;
 		absorbency=1;
 		hitpoints=150;
-		itemSize[]={3,6};
+		itemSize[]={4,8};
 		inventorySlot[] = {"DishAttachment"};
 		hiddenSelectionsTextures[]=
 		{
@@ -227,7 +230,25 @@ class CfgSlots
 	{
 		name = "DishAttachment";
 		displayName = "Sat Dish";
-		ghostIcon = "missing";
+		ghostIcon = "set:raidalarm_ghost image:satDish";
+	};
+	class Slot_ServerCluster
+	{
+		name = "ServerCluster";
+		displayName = "Server Cluster";
+		ghostIcon = "set:raidalarm_ghost image:serverCluster";
+	};
+	class Slot_ServerCommunication
+	{
+		name = "ServerCommunication";
+		displayName = "Communcation Array";
+		ghostIcon = "set:raidalarm_ghost image:serverCommunications";
+	};
+	class Slot_ServerPower
+	{
+		name = "ServerPower";
+		displayName = "Power Suply";
+		ghostIcon = "set:raidalarm_ghost image:serverPower";
 	};
 };
 class CfgNonAIVehicles

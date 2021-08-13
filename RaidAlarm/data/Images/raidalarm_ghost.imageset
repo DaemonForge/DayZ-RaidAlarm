@@ -1,0 +1,38 @@
+ImageSetClass {
+ Name "NewImageSet0"
+ RefSize 1024 1024
+ Textures {
+  ImageSetTextureClass {
+   mpix 1
+   path "{24D78F4981472829}RaidAlarm/data/Images/raidalarm_ghosts.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass serverCluster {
+   Name "serverCluster"
+   Pos 0 0
+   Size 512 512
+   Flags 0
+  }
+  ImageSetDefClass serverCommunications {
+   Name "serverCommunications"
+   Pos 512 0
+   Size 512 512
+   Flags 0
+  }
+  ImageSetDefClass serverPower {
+   Name "serverPower"
+   Pos 0 512
+   Size 512 512
+   Flags 0
+  }
+  ImageSetDefClass satDish {
+   Name "satDish"
+   Pos 512 512
+   Size 512 512
+   Flags 0
+  }
+ }
+ Groups {
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{24D78F4981472829}RaidAlarm/data/Images/raidalarm_ghosts.edds"
+ Author "desktop-tdpoqud"
+ ChangeDate -499897588
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "raidalarm_ghosts.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}
