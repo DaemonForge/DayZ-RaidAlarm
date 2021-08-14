@@ -142,14 +142,14 @@ class cfgVehicles
 		displayName="Raid Alarm Server";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\FullServerRack.p3d";
-		itemBehaviour = 2;
+		itemBehaviour=0;
 		weight=25000;
 		hitpoints=8000;
 		itemSize[]={10,14};
 		physLayer = "item_large";
 		attachments[] = {"BatteryServer","DishAttachment"};
-		carveNavmesh = 1;
-		heavyItem = 1;
+		carveNavmesh=1;
+		heavyItem=1;
 		energyResources[] = {{"power",8.0}};
 		class EnergyManager
 		{
@@ -225,8 +225,8 @@ class cfgVehicles
 		itemSize[]={9,4};
 		physLayer = "item_large";
 		inventorySlot[] = {"ServerCluster"};
-		carveNavmesh = 1;
-		heavyItem = 1;
+		carveNavmesh=1;
+		heavyItem=1;
 		class DamageSystem
 		{
 			class GlobalHealth
@@ -244,15 +244,15 @@ class cfgVehicles
 		displayName="Raid Alarm Communcation Array";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
-		itemBehaviour = 0;
+		itemBehaviour = 2;
 		weight=8000;
 		hitpoints=6000;
 		itemSize[]={9,5};
-		physLayer = "item_large";
-		inventorySlot[] = {"ServerCOMSArray"};
-		attachments[] = {"DishAttachment"};
-		carveNavmesh = 1;
-		heavyItem = 1;
+		physLayer="item_large";
+		inventorySlot[]={"ServerCOMSArray"};
+		attachments[] ={"DishAttachment"};
+		carveNavmesh =1;
+		heavyItem=1;
 		class DamageSystem
 		{
 			class GlobalHealth
