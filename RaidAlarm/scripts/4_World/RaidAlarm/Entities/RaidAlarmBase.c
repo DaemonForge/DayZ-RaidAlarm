@@ -5,26 +5,10 @@ class RaidAlarm_Base extends ItemBase {
 	protected bool m_HasRASyncedRequested = false;
 	
 	protected int m_LastAlarmTriggered = 0;
-
-	protected bool m_RASoundSynchRemote = false;
-	protected bool m_RASoundSynch = false;
 	
 	protected autoptr RaidAlarmPlayers m_RaidAlarmPlayers;
 	
 	void RaidAlarm_Base(){
-		CreateAndInitInventory();
-        if (!m_EM && ConfigIsExisting("EnergyManager"))
-        {
-			Print("[RAIDALARM] Creating Energy Manager on " + GetType());
-            CreateComponent(COMP_TYPE_ENERGY_MANAGER);
-            m_EM = ComponentEnergyManager.Cast(CreateComponent(COMP_TYPE_ENERGY_MANAGER));
-            RegisterNetSyncVariableBool("m_EM.m_IsSwichedOn");
-            RegisterNetSyncVariableBool("m_EM.m_CanWork");
-            RegisterNetSyncVariableBool("m_EM.m_IsPlugged");
-            RegisterNetSyncVariableInt("m_EM.m_EnergySourceNetworkIDLow");
-            RegisterNetSyncVariableInt("m_EM.m_EnergySourceNetworkIDHigh");
-        }
-		RegisterNetSyncVariableBool("m_RASoundSynch");
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.DoFirstSync);
 	}
 	
@@ -145,8 +129,7 @@ class RaidAlarm_Base extends ItemBase {
 		}
 		m_LastAlarmTriggered = curTime + GetMinTimeBetweenTiggers();
 		autoptr TStringMap players = m_RaidAlarmPlayers.GetPlayers();
-		m_RASoundSynch = !m_RASoundSynch;
-		SetSynchDirty();
+		TriggerAlarmSound();
 		for (int i = 0; i < players.Count(); i++){
 			UApi().ds().UserSend(players.GetKey(i), "You are being Raided");
 			PlayerBase player;
@@ -180,6 +163,13 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
+	protected void TriggerAlarmSound(){
+		if (GetGame().IsServer()){
+			RPCSingleParam(RAIDALARMRPCs.TIGGERALARMSOUND, new Param1<bool>( true ), true, NULL);
+		} else {
+			SoundBellPlay();
+		}
+	}
 	
 	override void OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx) {
 		super.OnRPC(sender, rpc_type, ctx);
@@ -198,6 +188,14 @@ class RaidAlarm_Base extends ItemBase {
 			}
 			return;
 		}
+		if (rpc_type == RAIDALARMRPCs.TIGGERALARMSOUND && GetGame().IsClient()) {
+			Param1<bool> asdata;
+			if (ctx.Read(asdata))	{
+				Print("[RAIDALARM] Trigger Sound On RaidAlarm");
+				SoundBellPlay();
+			}
+			return;
+		}
 	}
 	
 	override bool IsDeployable() {
@@ -212,29 +210,14 @@ class RaidAlarm_Base extends ItemBase {
 			RAFindAndLinkBaseItemsThread();
 		}
 	}
-		
-	override void OnVariablesSynchronized()
-	{
-		super.OnVariablesSynchronized();
-		
-				
-		if (m_RASoundSynchRemote != m_RASoundSynch) {
-			SoundBellPlay();
-		}
-		
-	}
-	
 	
 	protected void SoundBellPlay() 
 	{
-		m_RASoundSynchRemote = m_RASoundSynch;
 		if (GetGame().IsClient()){
 			EffectSound sound =	SEffectManager.PlaySound( "RaidAlarmBellLongRange_SoundSet", GetPosition() );
 			sound.SetSoundAutodestroy( true );
 		}
 	}
-
-	
 	
 	override void OnStoreSave( ParamsWriteContext ctx )
 	{   

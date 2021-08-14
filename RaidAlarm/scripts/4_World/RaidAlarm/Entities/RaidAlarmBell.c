@@ -3,7 +3,7 @@ class RaidAlarm_Bell extends RaidAlarm_Base{
 	
 	
 	override int GetMinTimeBetweenTiggers() {
-		return 90 * 1000;
+		return 180 * 1000;
 	}
 	
 	bool CanSetOffAlarm(){
