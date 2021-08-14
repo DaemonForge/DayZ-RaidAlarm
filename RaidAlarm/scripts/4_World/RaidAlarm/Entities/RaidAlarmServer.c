@@ -48,10 +48,6 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
 	}
 	
-	bool HasProxyParts()
-	{
-		return true;
-	}
 	
 	bool HasAllRequiredParts(){
 		return (HasDish() && HasServerCluster());
