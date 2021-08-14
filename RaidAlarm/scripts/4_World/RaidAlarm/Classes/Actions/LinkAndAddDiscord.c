@@ -44,9 +44,9 @@ class LinkAndAddDiscord extends ActionInteractBase
 	override void OnExecuteServer( ActionData action_data )
 	{
 		if (action_data && action_data.m_Target && action_data.m_Player){
-			RaidAlarm_Base raidalarm = RaidAlarm_Base.Cast(action_data.m_Target.GetObject());
+			RaidAlarm_Base raidalarm;
 			PlayerBase thePlayer = PlayerBase.Cast(action_data.m_Player);
-			if (raidalarm && thePlayer && thePlayer.GetIdentity()){
+			if ((Class.CastTo(raidalarm, action_data.m_Target.GetObject()) || Class.CastTo(raidalarm, action_data.m_Target.GetParent()))  && thePlayer && thePlayer.GetIdentity()){
 				if (!raidalarm.RACheckPlayer(thePlayer.GetIdentity().GetId())){
 					raidalarm.AddRAPlayer(thePlayer.GetIdentity().GetId(),thePlayer.GetIdentity().GetName());
 				} else {
