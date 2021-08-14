@@ -1,8 +1,12 @@
 modded class ModItemRegisterCallbacks
-{
-	override void RegisterOneHanded(DayZPlayerType pType, DayzPlayerItemBehaviorCfg pBehavior)
-	{
-		super.RegisterOneHanded(pType, pBehavior);
-		//pType.AddItemInHandsProfileIK("RaidAlarm_Base", "dz/anims/workspaces/player/player_main/props/player_main_1h_crowbar.asi", pBehavior,	"dz/anims/anm/player/ik/gear/hatchet.anm");
-	};
+{	
+    override void RegisterHeavy(DayZPlayerType pType, DayzPlayerItemBehaviorCfg pBehavior){
+		super.RegisterHeavy(pType, pBehavior);
+	
+		pType.AddItemInHandsProfileIK("RaidAlarm_PowerSuply", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", pBehavior,				 		"dz/anims/anm/player/ik/heavy/sea_chest.anm");
+		pType.AddItemInHandsProfileIK("RaidAlarm_ServerCluster", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", pBehavior,				 		"dz/anims/anm/player/ik/heavy/car_tent_packed.anm");
+		pType.AddItemInHandsProfileIK("RaidAlarm_CommunicationsArray", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", pBehavior,				 		"dz/anims/anm/player/ik/heavy/sea_chest.anm");
+		pType.AddItemInHandsProfileIK("RaidAlarm_Server", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", pBehavior,				 		"dz/anims/anm/player/ik/heavy/sea_chest.anm");
+		
+	}
 };
