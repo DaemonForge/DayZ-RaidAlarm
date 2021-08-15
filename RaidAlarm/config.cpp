@@ -326,7 +326,7 @@ class CfgSoundShaders
 				1
 			}
 		};
-		volume=1.9;
+		volume=1.6;
 		range=1100;
 	};
 	class RaidAlarmBellShortRange_SoundShader: baseCharacter_SoundShader
@@ -337,7 +337,7 @@ class CfgSoundShaders
 				1
 			}
 		};
-		volume=1.6;
+		volume=1.2;
 		range=500;
 	};
 };

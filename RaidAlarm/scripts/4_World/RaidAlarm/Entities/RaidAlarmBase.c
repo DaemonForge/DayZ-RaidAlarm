@@ -157,7 +157,7 @@ class RaidAlarm_Base extends ItemBase {
 		if ( GetGame().IsServer() ) {
 			SetSynchDirty();
 			RPCSingleParam(RAIDALARMRPCs.SEND_DATA, new Param1< RaidAlarmPlayers >(m_RaidAlarmPlayers), true, identity);
-		} else if (GetGame().IsClient()){
+		} else if ( GetGame().IsClient() ){
 			m_HasRASyncedRequested = true;
 			RPCSingleParam(RAIDALARMRPCs.REQUEST_DATA, new Param1<bool>( true ), true, NULL);
 		}
@@ -165,14 +165,13 @@ class RaidAlarm_Base extends ItemBase {
 	
 	protected void TriggerAlarmSound(){
 		if (GetGame().IsServer()){
-			RPCSingleParam(RAIDALARMRPCs.TIGGERALARMSOUND, new Param1<bool>( true ), true, NULL);
+			GetGame().RPCSingleParam(this, RAIDALARMRPCs.TIGGERALARMSOUND, new Param2<string,vector>( "RaidAlarmBellLongRange_SoundSet", GetPosition() ), true, NULL);
 		} else {
 			SoundBellPlay();
 		}
 	}
 	
 	override void OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx) {
-		super.OnRPC(sender, rpc_type, ctx);
 		if (rpc_type == RAIDALARMRPCs.SEND_DATA && GetGame().IsClient()) {
 			Param1< RaidAlarmPlayers > sdata;
 			if (ctx.Read(sdata)){
@@ -188,14 +187,7 @@ class RaidAlarm_Base extends ItemBase {
 			}
 			return;
 		}
-		if (rpc_type == RAIDALARMRPCs.TIGGERALARMSOUND && GetGame().IsClient()) {
-			Param1<bool> asdata;
-			if (ctx.Read(asdata))	{
-				Print("[RAIDALARM] Trigger Sound On RaidAlarm");
-				SoundBellPlay();
-			}
-			return;
-		}
+		super.OnRPC(sender, rpc_type, ctx);
 	}
 	
 	override bool IsDeployable() {
