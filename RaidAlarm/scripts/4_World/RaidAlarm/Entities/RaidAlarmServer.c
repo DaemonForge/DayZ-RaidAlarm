@@ -34,7 +34,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	}
 	
 	override int GetRARadius(){
-		return 60;
+		return GameConstants.REFRESHER_RADIUS;
 	}
 }
 class RaidAlarm_PowerSuply extends RaidAlarm_Base{
@@ -64,7 +64,6 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	override void EEItemDetached(EntityAI item, string slot_name)
 	{
 		super.EEItemDetached(item, slot_name);
-		
 		
 		if (slot_name == "BatteryServer" && item){
 			item.GetCompEM().SwitchOff();
@@ -136,7 +135,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	}
 	
 	override int GetMinTimeBetweenTiggers() {
-		return 180 * 1000;
+		return 300 * 1000;
 	}
 	
 	bool CanSetOffAlarm(){	
@@ -154,7 +153,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	}
 	
 	override int GetRARadius(){
-		return 60;
+		return GameConstants.REFRESHER_RADIUS;
 	}
 	
 	

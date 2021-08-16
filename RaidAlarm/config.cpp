@@ -153,6 +153,7 @@ class cfgVehicles
 		physLayer = "item_large";
 		attachments[] = {"BatteryServer","DishAttachment"};
 		carveNavmesh=1;
+		itemBehaviour=0;
 		heavyItem=1;
 		energyResources[] = {{"power",8.0}};
 		class EnergyManager
@@ -195,6 +196,7 @@ class cfgVehicles
 		physLayer = "item_large";
 		attachments[] = {"BatteryServer","ServerCluster","ServerCOMSArray"};
 		carveNavmesh = 1;
+		itemBehaviour=0;
 		heavyItem = 1;
 		energyResources[] = {{"power",8.0}};
 		class EnergyManager
@@ -228,6 +230,7 @@ class cfgVehicles
 		physLayer = "item_large";
 		inventorySlot[] = {"ServerCluster"};
 		carveNavmesh=1;
+		itemBehaviour=0;
 		heavyItem=1;
 		class DamageSystem
 		{
@@ -253,6 +256,7 @@ class cfgVehicles
 		inventorySlot[]={"ServerCOMSArray"};
 		attachments[] ={"DishAttachment"};
 		carveNavmesh =1;
+		itemBehaviour=0;
 		heavyItem=1;
 		class DamageSystem
 		{
