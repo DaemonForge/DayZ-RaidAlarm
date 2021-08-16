@@ -21,13 +21,17 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	}
 	
 	override int GetMinTimeBetweenTiggers() {
-		return 180 * 1000;
+		return 300 * 1000;
 	}
 	
 	bool CanSetOffAlarm(){
 		return HasDish();
 	}
 	
+	override string GetAlarmSoundSet(){
+		//return "RaidAlarmBellShortRange_SoundShader";
+		return "RaidAlarmBellLongRange_SoundSet";
+	}
 	
 	override int GetRARadius(){
 		return 60;
@@ -48,6 +52,10 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
 	}
 	
+	override string GetAlarmSoundSet(){
+		//return "RaidAlarmBellShortRange_SoundShader";
+		return "RaidAlarmBellLongRange_SoundSet";
+	}
 	
 	bool HasAllRequiredParts(){
 		return (HasDish() && HasServerCluster());

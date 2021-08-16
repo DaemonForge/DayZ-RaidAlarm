@@ -2,6 +2,7 @@ class CfgPatches
 {
 	class RaidAlarm
 	{
+		units[]={"RaidAlarm_ServerBattery", "RaidAlarm_Bell","RaidAlarm_Server","RaidAlarm_PowerSuply","RaidAlarm_ServerCluster","RaidAlarm_CommunicationsArray","RaidAlarm_Dish"};
 		requiredVersion=0.1;
 		requiredAddons[]={
 			"UniversalApi"
@@ -72,12 +73,16 @@ class cfgVehicles
 		{
 			"zbytek"
 		};
+		hiddenSelectionsTextures[]=
+		{
+			"DZ\vehicles\parts\data\truck_bat_co.paa"
+		};
 	};
 	
 	class RaidAlarm_ServerBattery: TruckBattery
 	{
 		displayName="Server Battery";
-		inventorySlot[] = {"BatteryServer"};
+		inventorySlot[] = {"BatteryServer","LargeBattery"};
 		hiddenSelections[]=
 		{
 			"zbytek"
@@ -104,7 +109,7 @@ class cfgVehicles
 	
 	class RaidAlarm_Base : Inventory_Base
 	{
-		scope=2;
+		scope=0;
 		displayName="Raid Alarm Base";
 		descriptionShort="RaidAlarm";
 		model="RaidAlarm\data\Bell\AlarmBell.p3d";
@@ -142,7 +147,6 @@ class cfgVehicles
 		displayName="Raid Alarm Server";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\FullServerRack.p3d";
-		itemBehaviour=0;
 		weight=25000;
 		hitpoints=8000;
 		itemSize[]={10,14};
@@ -184,7 +188,6 @@ class cfgVehicles
 		displayName="Raid Alarm Power Supply";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerPowerSupply.p3d";
-		itemBehaviour = 0;
 		weight=8000;
 		hitpoints=6000;
 		slopeTolerance = 0.4;
@@ -219,7 +222,6 @@ class cfgVehicles
 		displayName="Raid Alarm Server Cluster";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerCluster.p3d";
-		itemBehaviour = 0;
 		weight=7000;
 		hitpoints=6000;
 		itemSize[]={9,4};
@@ -244,7 +246,6 @@ class cfgVehicles
 		displayName="Raid Alarm Communcation Array";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\ServerRack\ServerCOMSArray.p3d";
-		itemBehaviour = 2;
 		weight=8000;
 		hitpoints=6000;
 		itemSize[]={9,5};
@@ -270,7 +271,6 @@ class cfgVehicles
 		displayName="Raid Alarm Satillite Dish";
 		descriptionShort="Raid Alarm";
 		model="RaidAlarm\data\Dish Attachment\DishAttachment.p3d";
-		itemBehaviour = 1;
 		weight=2000;
 		absorbency=1;
 		hitpoints=150;

@@ -163,9 +163,14 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
+	string GetAlarmSoundSet(){
+		return "RaidAlarmBellShortRange_SoundShader";
+		//return "RaidAlarmBellLongRange_SoundSet";
+	}
+	
 	protected void TriggerAlarmSound(){
 		if (GetGame().IsServer()){
-			GetGame().RPCSingleParam(this, RAIDALARMRPCs.TIGGERALARMSOUND, new Param2<string,vector>( "RaidAlarmBellLongRange_SoundSet", GetPosition() ), true, NULL);
+			GetGame().RPCSingleParam(this, RAIDALARMRPCs.TIGGERALARMSOUND, new Param2<string,vector>( GetAlarmSoundSet(), GetPosition() ), true, NULL);
 		} else {
 			SoundBellPlay();
 		}
