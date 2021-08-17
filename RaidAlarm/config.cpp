@@ -116,7 +116,6 @@ class cfgVehicles
 		itemBehaviour = 1;
 		weight=2000;
 		itemSize[]={2,3};
-		rotationFlags=16;
 		hitpoints=200;
 	};
 	class RaidAlarm_Bell : RaidAlarm_Base
@@ -183,12 +182,12 @@ class cfgVehicles
 			};
 		};
 	};
-	class RaidAlarm_PowerSuply : RaidAlarm_Base
+	class RaidAlarm_PowerSupply : RaidAlarm_Server
 	{
 		scope=2;
 		displayName="Raid Alarm Power Supply";
 		descriptionShort="Raid Alarm";
-		model="RaidAlarm\data\ServerRack\ServerPowerSupply.p3d";
+		model="RaidAlarm\data\ServerRack\RaidAlarm_PowerSupply.p3d";
 		weight=8000;
 		hitpoints=6000;
 		slopeTolerance = 0.4;

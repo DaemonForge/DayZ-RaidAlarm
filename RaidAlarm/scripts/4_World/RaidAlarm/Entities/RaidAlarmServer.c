@@ -1,121 +1,18 @@
 
 class RaidAlarm_ServerBattery extends TruckBattery{}
-class RaidAlarm_ServerCluster extends ItemBase{}
 class RaidAlarm_Dish extends ItemBase{}
-class RaidAlarm_CommunicationsArray extends ItemBase{
-	bool HasDish(){
-		if (RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"))){
-			return true;
-		}
-		return false;
-	}
-}
 
 class RaidAlarm_Server extends RaidAlarm_Base{
 	
-	bool HasDish(){
-		if (RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"))){
-			return true;
-		}
-		return false;
-	}
+	protected bool m_IsDeployed = false;
 	
-	override int GetMinTimeBetweenTiggers() {
-		return 300 * 1000;
-	}
-	
-	bool CanSetOffAlarm(){
-		return HasDish();
-	}
-	
-	override string GetAlarmSoundSet(){
-		//return "RaidAlarmBellShortRange_SoundShader";
-		return "RaidAlarmBellLongRange_SoundSet";
-	}
-	
-	override int GetRARadius(){
-		return GameConstants.REFRESHER_RADIUS;
-	}
-}
-class RaidAlarm_PowerSuply extends RaidAlarm_Base{
-	
+	protected int slot_ServerBattery = InventorySlots.INVALID;
 	
 	protected int TimeOfLastDrain = 0;
 	
-	protected int slot_ServerCOMSArray = InventorySlots.INVALID;
-	protected int slot_ServerCluster = InventorySlots.INVALID;
-	protected int slot_ServerBattery = InventorySlots.INVALID;
-	
-	void RaidAlarm_PowerSuply(){
-		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
-		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
+	void RaidAlarm_Server(){
+		RegisterNetSyncVariableBool("m_IsDeployed");
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
-		RefreshRAPhysics();
-	}
-	
-	override string GetAlarmSoundSet(){
-		//return "RaidAlarmBellShortRange_SoundShader";
-		return "RaidAlarmBellLongRange_SoundSet";
-	}
-	
-	bool HasAllRequiredParts(){
-		return (HasDish() && HasServerCluster());
-	}
-	
-	override void EEItemDetached(EntityAI item, string slot_name)
-	{
-		super.EEItemDetached(item, slot_name);
-		
-		
-		if (slot_name == "BatteryServer" && item){
-			item.GetCompEM().SwitchOff();
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOff);
-			SetSynchDirty();
-		}
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RefreshRAPhysics);
-	}
-		
-	override void EEItemAttached(EntityAI item, string slot_name)
-	{
-		super.EEItemAttached(item, slot_name);
-				
-		if (slot_name == "BatteryServer" && item){
-			item.GetCompEM().SwitchOn();
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOn);
-			SetSynchDirty();
-		}
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RefreshRAPhysics);
-	}
-	
-	bool HasDish(){
-		RaidAlarm_CommunicationsArray comArray;
-		if (GetInventory() && Class.CastTo(comArray, GetInventory().FindAttachment(slot_ServerCOMSArray)) && comArray.HasDish()){
-			return true;
-		}
-		return false;
-	}
-	
-	override bool CanReceiveAttachment( EntityAI attachment, int slotId ) {
-		if( !HasServerCluster() && slotId == slot_ServerCOMSArray ){
-			return false;
-		}
-		return super.CanReceiveAttachment( attachment, slotId );
-	}
-	
-	bool HasServerCluster(){
-		RaidAlarm_ServerCluster cluster;
-		if (slot_ServerCluster != InventorySlots.INVALID && GetInventory() && Class.CastTo(cluster, GetInventory().FindAttachment(slot_ServerCluster))){
-			return true;
-		}
-		return false;
-	}
-	
-	bool HasCommunicationArray(){
-		RaidAlarm_CommunicationsArray cluster;
-		if (slot_ServerCOMSArray != InventorySlots.INVALID && GetInventory() && Class.CastTo(cluster, GetInventory().FindAttachment(slot_ServerCOMSArray))){
-			return true;
-		}
-		return false;
 	}
 	
 	override bool NameOverride(out string output)
@@ -130,50 +27,37 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
         return super.NameOverride(output);
     }
 	
-	override bool CanReleaseAttachment(EntityAI attachment)
-	{
-		if( HasCommunicationArray() && attachment.IsInherited(RaidAlarm_ServerCluster)) {
-			return false;
+	bool HasDish(){
+		if (GetInventory() && RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"))){
+			return true;
 		}
-		return super.CanReleaseAttachment(attachment);
+		return false;
 	}
 	
 	override int GetMinTimeBetweenTiggers() {
 		return 300 * 1000;
 	}
-	
-	bool CanSetOffAlarm(){	
-		return (HasServerCluster() && HasCommunicationArray() && HasDish() && GetCompEM().CanWork(1));
-	}
-
-	override bool CanPutInCargo( EntityAI parent )
-	{
-		return (super.CanPutInCargo( parent ) && !HasServerCluster() && !HasCommunicationArray());
+		
+	override string GetAlarmSoundSet(){
+		//return "RaidAlarmBellShortRange_SoundShader";
+		return "RaidAlarmBellLongRange_SoundSet";
 	}
 	
-	override bool CanPutIntoHands( EntityAI parent )
-	{
-		return (super.CanPutIntoHands( parent ) && !HasServerCluster() && !HasCommunicationArray());
+	override void AfterStoreLoad()
+	{	
+		super.AfterStoreLoad();	
+		TimeOfLastDrain = GetGame().GetTime();
 	}
 	
 	override int GetRARadius(){
 		return GameConstants.REFRESHER_RADIUS;
 	}
 	
-	
-	override void AfterStoreLoad()
-	{	
-		super.AfterStoreLoad();	
-		TimeOfLastDrain = GetGame().GetTime();
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RefreshRAPhysics);
+	override bool CanSetOffAlarm(){	
+		return (HasDish() && GetCompEM().CanWork(1) && m_IsDeployed);
 	}
 	
-	RaidAlarm_ServerBattery GetServerBattery(){
-		return RaidAlarm_ServerBattery.Cast(GetInventory().FindAttachment(slot_ServerBattery));
-	}
-	
-	override void OnStoreSave( ParamsWriteContext ctx )
-	{   
+	void UpdateRABattery(){
 		int curtime = GetGame().GetTime();
 		if (GetInventory()){
 			RaidAlarm_ServerBattery batt = GetServerBattery();
@@ -190,29 +74,67 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 				ConvertEnergyToQuantity();
 			}
 		}
+	}
+
+	override void EEItemDetached(EntityAI item, string slot_name)
+	{
+		super.EEItemDetached(item, slot_name);
+		
+		
+		if (slot_name == "BatteryServer" && item){
+			item.GetCompEM().SwitchOff();
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOff);
+			SetSynchDirty();
+		}
+	}
+		
+	override void EEItemAttached(EntityAI item, string slot_name)
+	{
+		super.EEItemAttached(item, slot_name);
+				
+		if (slot_name == "BatteryServer" && item){
+			item.GetCompEM().SwitchOn();
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOn);
+			SetSynchDirty();
+		}
+	}
+	
+	
+	override bool OnStoreLoad( ParamsReadContext ctx, int version )
+	{
+		if ( !super.OnStoreLoad( ctx, version ) )
+			return false;
+		
+		if (!ctx.Read(m_IsDeployed)){
+			return false;
+		}
+
+		return true;
+	}
+	
+	override void OnStoreSave( ParamsWriteContext ctx )
+	{   
+		UpdateRABattery();
+		
 		super.OnStoreSave( ctx );
+		
+		ctx.Write(m_IsDeployed);
 	}
 	
-	void RefreshRAPhysics(){
-		
-		//HideRASimpleSelection("Deployed", !HasServerCluster());
-		
-		RemoveProxyPhysics("coms_array");
-		RemoveProxyPhysics("server_cluster");
-		
-		if (HasServerCluster()) {
-			AddProxyPhysics("server_cluster");
-		}
-		if (HasCommunicationArray()) {
-			AddProxyPhysics("coms_array");
-		}
+	
+	override bool CanPutInCargo( EntityAI parent )
+	{
+		return false;
 	}
 	
-	protected void HideRASimpleSelection(string selectionName, bool hide = true)
-    {
-        TStringArray selectionNames = new TStringArray;
-        ConfigGetTextArray("simpleHiddenSelections",selectionNames);
-        int selectionId = selectionNames.Find(selectionName);
-        SetSimpleHiddenSelectionState(selectionId, hide);
-    };
+	override bool CanPutIntoHands( EntityAI parent )
+	{
+		return false;
+	}
+	
+	
+	RaidAlarm_ServerBattery GetServerBattery(){
+		return RaidAlarm_ServerBattery.Cast(GetInventory().FindAttachment(slot_ServerBattery));
+	}
+	
 }
