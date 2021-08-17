@@ -199,6 +199,14 @@ class cfgVehicles
 		itemBehaviour=0;
 		heavyItem = 1;
 		energyResources[] = {{"power",8.0}};
+		simpleHiddenSelections[] = {
+			"coms_array",
+			"server_cluster"
+		};
+		hiddenSelections[]= {
+			"coms_array",
+			"server_cluster"
+		};
 		class EnergyManager
 		{
 			hasIcon = 1;

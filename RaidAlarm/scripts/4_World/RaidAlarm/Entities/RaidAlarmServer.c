@@ -50,6 +50,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
 		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
+		RefreshRAPhysics();
 	}
 	
 	override string GetAlarmSoundSet(){
@@ -65,22 +66,25 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	{
 		super.EEItemDetached(item, slot_name);
 		
+		
 		if (slot_name == "BatteryServer" && item){
 			item.GetCompEM().SwitchOff();
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOff);
 			SetSynchDirty();
 		}
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RefreshRAPhysics);
 	}
 		
 	override void EEItemAttached(EntityAI item, string slot_name)
 	{
 		super.EEItemAttached(item, slot_name);
-		
+				
 		if (slot_name == "BatteryServer" && item){
 			item.GetCompEM().SwitchOn();
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.GetCompEM().SwitchOn);
 			SetSynchDirty();
 		}
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RefreshRAPhysics);
 	}
 	
 	bool HasDish(){
@@ -161,6 +165,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 	{	
 		super.AfterStoreLoad();	
 		TimeOfLastDrain = GetGame().GetTime();
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RefreshRAPhysics);
 	}
 	
 	RaidAlarm_ServerBattery GetServerBattery(){
@@ -188,4 +193,26 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 		super.OnStoreSave( ctx );
 	}
 	
+	void RefreshRAPhysics(){
+		
+		//HideRASimpleSelection("Deployed", !HasServerCluster());
+		
+		RemoveProxyPhysics("coms_array");
+		RemoveProxyPhysics("server_cluster");
+		
+		if (HasServerCluster()) {
+			AddProxyPhysics("server_cluster");
+		}
+		if (HasCommunicationArray()) {
+			AddProxyPhysics("server_cluster");
+		}
+	}
+	
+	protected void HideRASimpleSelection(string selectionName, bool hide = true)
+    {
+        TStringArray selectionNames = new TStringArray;
+        ConfigGetTextArray("simpleHiddenSelections",selectionNames);
+        int selectionId = selectionNames.Find(selectionName);
+        SetSimpleHiddenSelectionState(selectionId, hide);
+    };
 }
