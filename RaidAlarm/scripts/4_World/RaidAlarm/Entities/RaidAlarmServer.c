@@ -204,7 +204,7 @@ class RaidAlarm_PowerSuply extends RaidAlarm_Base{
 			AddProxyPhysics("server_cluster");
 		}
 		if (HasCommunicationArray()) {
-			AddProxyPhysics("server_cluster");
+			AddProxyPhysics("coms_array");
 		}
 	}
 	
