@@ -148,21 +148,19 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	void CreateAndTransferToPowerSuppy(){
 		RaidAlarm_PowerSupply server = RaidAlarm_PowerSupply.Cast( GetGame().CreateObject("RaidAlarm_PowerSupply", GetPosition() ) );
 		server.SetOrientation(GetOrientation());
+		
 		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
-		server.ServerTakeEntityAsAttachmentEx(comarray,slot_ServerCOMSArray);
+		server.ServerTakeEntityAsAttachmentEx(comarray, slot_ServerCOMSArray);
 		if (GetInventory().FindAttachment(slot_SatDish)){
-			comarray.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_SatDish),slot_SatDish);
+			comarray.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_SatDish), slot_SatDish);
 		}
 		if (GetInventory().FindAttachment(slot_ServerBattery)){
-			server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerBattery),slot_ServerBattery);
+			server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerBattery), slot_ServerBattery);
 		}
 		server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerCluster),slot_ServerCluster);
-		
 		server.OverrideAlarmPlayers(m_RaidAlarmPlayers);
 		server.SetHealth("","",GetHealth("",""));
-		
 		server.SetIsDeployed(true);
-		
 		server.RAFindAndLinkBaseItemsThread();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
 	}

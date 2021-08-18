@@ -17,10 +17,8 @@ class RaidAlarm_CommunicationsArray extends ItemBase{
 		RaidAlarm_Server parent;
         if (Class.CastTo(parent, GetParent()) && parent.IsFullServer() ) {
 			
-		Print("CanDisplayAttachmentCategory IsFullServer");
             return false;
 		}
-		Print("CanDisplayAttachmentCategory");
         return super.CanDisplayAttachmentCategory(category_name);
     }
 	
