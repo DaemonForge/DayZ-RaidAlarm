@@ -14,20 +14,26 @@ class RaidAlarm_CommunicationsArray extends ItemBase{
 	}
 	
 	override bool CanDisplayAttachmentCategory(string category_name) {
-		EntityAI parent;
-        if (Class.CastTo(parent, GetParent()) && parent.GetType() == "RaidAlarm_Server" ) {
+		RaidAlarm_Server parent;
+        if (Class.CastTo(parent, GetParent()) && parent.IsFullServer() ) {
+			
+		Print("CanDisplayAttachmentCategory IsFullServer");
             return false;
 		}
+		Print("CanDisplayAttachmentCategory");
         return super.CanDisplayAttachmentCategory(category_name);
     }
 	
 }
 
 class RaidAlarm_PowerSupply extends RaidAlarm_Server {
-		
+	
+	
+	protected bool m_RaidAlarmDeleting = false;
+
 	void ~RaidAlarm_PowerSupply(){
-		RemoveProxyPhysics("server_cluster");
-		RemoveProxyPhysics("coms_array");
+		//RemoveProxyPhysics("server_cluster");
+		//RemoveProxyPhysics("coms_array");
 	}
 	
 	override string GetAlarmSoundSet(){
@@ -47,7 +53,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		super.EEItemAttached(item, slot_name);
 		
 		if (slot_name == "ServerCOMSArray" && GetGame().IsServer()){
-			CreateAndTransferToServer();
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.CreateAndTransferToServer);
 			return;
 		}
 		
@@ -60,8 +66,8 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
 		if (comarray && comarray.HasDish()){
 			server.ServerTakeEntityAsAttachmentEx(comarray.GetDish(),slot_SatDish);
-			server.ServerTakeEntityAsAttachmentEx(comarray,slot_ServerCOMSArray);
 		}
+		server.ServerTakeEntityAsAttachmentEx(comarray,slot_ServerCOMSArray);
 		if (GetInventory().FindAttachment(slot_ServerBattery)){
 			server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerBattery),slot_ServerBattery);
 		}
@@ -73,8 +79,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		server.SetIsDeployed(true);
 		
 		server.RAFindAndLinkBaseItemsThread();
-		
-		GetGame().ObjectDelete(this);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
 	}
 	
 	override bool HasDish(){
@@ -138,12 +143,13 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 	override void RefreshPhysics()
 	{
 		super.RefreshPhysics();
-		Print("RefreshPhysics");
+		/*Print("RefreshPhysics");
 		
 		if ( this  &&  !ToDelete() )
 		{
-			Print("RefreshPhysics");
+			Print("RefreshPhysics !ToDelete server_cluster");
 			RemoveProxyPhysics("server_cluster");
+			Print("RefreshPhysics !ToDelete coms_array");
 			RemoveProxyPhysics("coms_array");
 			if (HasServerCluster()) {
 				Print("RefreshRAPhysics AddProxyPhysics server_cluster");
@@ -153,7 +159,8 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 				Print("RefreshRAPhysics AddProxyPhysics coms_array");
 				AddProxyPhysics("coms_array");
 			}
-		}
+		} 
+		Print("RefreshPhysics end");*/
 	}
 		
 	protected void HideRASimpleSelection(string selectionName, bool hide = true)
@@ -163,4 +170,9 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
         int selectionId = selectionNames.Find(selectionName);
         SetSimpleHiddenSelectionState(selectionId, hide);
     };
+	
+	
+	override bool IsFullServer(){
+		return false;
+	}
 }

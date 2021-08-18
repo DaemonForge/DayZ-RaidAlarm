@@ -181,6 +181,33 @@ class cfgVehicles
 				};
 			};
 		};
+		class GUIInventoryAttachmentsProps
+		{
+			class Servers
+			{
+				name = "Servers";
+				description = "";
+				attachmentSlots[] = {"ServerCluster","ServerCOMSArray"};
+				icon = "set:raidalarm_ghost image:ServerPower";
+				view_index = 1;
+			};
+			class Power
+			{
+				name = "Power";
+				description = "";
+				attachmentSlots[] = {"BatteryServer"};
+				icon = "set:dayz_inventory image:carbattery";
+				view_index = 1;
+			};
+			class Communcations
+			{
+				name = "Communcations";
+				description = "";
+				attachmentSlots[] = {"DishAttachment"};
+				icon = "set:raidalarm_ghost image:ServerCOMSArray";
+				view_index = 1;
+			};
+		};
 	};
 	class RaidAlarm_PowerSupply : RaidAlarm_Server
 	{
@@ -275,6 +302,7 @@ class cfgVehicles
 				};
 			};
 		};
+		
 	};
 	class RaidAlarm_Dish : Inventory_Base
 	{

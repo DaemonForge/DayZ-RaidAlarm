@@ -16,7 +16,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
 		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
 		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
-		slot_SatDish = InventorySlots.GetSlotIdFromString("ServerCluster");
+		slot_SatDish = InventorySlots.GetSlotIdFromString("DishAttachment");
 	}
 	
 	override bool NameOverride(out string output)
@@ -33,7 +33,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	override bool CanReleaseAttachment(EntityAI attachment)
 	{
-		if (this.GetType() == "RaidAlarm_Server" && ( attachment.IsInherited(RaidAlarm_ServerCluster) ||  attachment.IsInherited(RaidAlarm_CommunicationsArray) )) {
+		if (IsFullServer() && ( attachment.IsInherited(RaidAlarm_ServerCluster) ||  attachment.IsInherited(RaidAlarm_CommunicationsArray) )) {
 			return false;
 		}
 		return super.CanReleaseAttachment(attachment);
@@ -114,7 +114,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	override bool CanPutInCargo( EntityAI parent )
 	{
-		if (this.GetType() == "RaidAlarm_Server"){
+		if (IsFullServer()){
 			return false;
 		}		
 		return super.CanPutInCargo(parent));
@@ -122,7 +122,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	override bool CanPutIntoHands( EntityAI parent )
 	{
-		if (this.GetType() == "RaidAlarm_Server"){
+		if (IsFullServer()){
 			return false;
 		}
 		return super.CanPutIntoHands(parent));
@@ -131,6 +131,40 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	RaidAlarm_ServerBattery GetServerBattery(){
 		return RaidAlarm_ServerBattery.Cast(GetInventory().FindAttachment(slot_ServerBattery));
+	}
+	
+	bool IsFullServer(){
+		return true;
+	}
+	
+	override bool CanDisplayAttachmentCategory(string category_name) {
+        if (category_name  == "Servers" && GetGame().IsClient() && IsFullServer()) {
+            return false;
+		}
+        return super.CanDisplayAttachmentCategory(category_name);
+    }
+	
+	
+	void CreateAndTransferToPowerSuppy(){
+		RaidAlarm_PowerSupply server = RaidAlarm_PowerSupply.Cast( GetGame().CreateObject("RaidAlarm_PowerSupply", GetPosition() ) );
+		server.SetOrientation(GetOrientation());
+		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
+		server.ServerTakeEntityAsAttachmentEx(comarray,slot_ServerCOMSArray);
+		if (GetInventory().FindAttachment(slot_SatDish)){
+			comarray.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_SatDish),slot_SatDish);
+		}
+		if (GetInventory().FindAttachment(slot_ServerBattery)){
+			server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerBattery),slot_ServerBattery);
+		}
+		server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerCluster),slot_ServerCluster);
+		
+		server.OverrideAlarmPlayers(m_RaidAlarmPlayers);
+		server.SetHealth("","",GetHealth("",""));
+		
+		server.SetIsDeployed(true);
+		
+		server.RAFindAndLinkBaseItemsThread();
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
 	}
 	
 }
