@@ -8,18 +8,23 @@ class RaidAlarm_CommunicationsArray extends ItemBase{
 		}
 		return false;
 	}
+	
+	RaidAlarm_Dish GetDish(){
+		return RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"));
+	}
+	
+	override bool CanDisplayAttachmentCategory(string category_name) {
+		EntityAI parent;
+        if (Class.CastTo(parent, GetParent()) && parent.GetType() == "RaidAlarm_Server" ) {
+            return false;
+		}
+        return super.CanDisplayAttachmentCategory(category_name);
+    }
+	
 }
 
 class RaidAlarm_PowerSupply extends RaidAlarm_Server {
-	
-	protected int slot_ServerCOMSArray = InventorySlots.INVALID;
-	protected int slot_ServerCluster = InventorySlots.INVALID;
-	
-	void RaidAlarm_PowerSupply(){
-		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
-		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
-	}
-	
+		
 	void ~RaidAlarm_PowerSupply(){
 		RemoveProxyPhysics("server_cluster");
 		RemoveProxyPhysics("coms_array");
@@ -28,26 +33,6 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 	override string GetAlarmSoundSet(){
 		//return "RaidAlarmBellShortRange_SoundShader";
 		return "RaidAlarmBellLongRange_SoundSet";
-	}
-	
-	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
-	{
-		super.OnItemLocationChanged(old_owner, new_owner);
-		
-		if (GetGame().IsServer()){
-			m_IsDeployed = false;
-			SetSynchDirty();
-		}
-	}
-	
-	override void OnPlacementComplete( Man player, vector position = "0 0 0", vector orientation = "0 0 0" )
-	{
-		super.OnPlacementComplete( player, position, orientation );
-		
-		if ( GetGame().IsServer() ) {
-			m_IsDeployed = true;
-			SetSynchDirty();
-		}
 	}
 	
 	override void EEItemDetached(EntityAI item, string slot_name)
@@ -60,8 +45,36 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 	override void EEItemAttached(EntityAI item, string slot_name)
 	{
 		super.EEItemAttached(item, slot_name);
-				
+		
+		if (slot_name == "ServerCOMSArray" && GetGame().IsServer()){
+			CreateAndTransferToServer();
+			return;
+		}
+		
 		RefreshPhysics();
+	}
+	
+	void CreateAndTransferToServer(){
+		RaidAlarm_Server server = RaidAlarm_Server.Cast( GetGame().CreateObject("RaidAlarm_Server", GetPosition() ) );
+		server.SetOrientation(GetOrientation());
+		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
+		if (comarray && comarray.HasDish()){
+			server.ServerTakeEntityAsAttachmentEx(comarray.GetDish(),slot_SatDish);
+			server.ServerTakeEntityAsAttachmentEx(comarray,slot_ServerCOMSArray);
+		}
+		if (GetInventory().FindAttachment(slot_ServerBattery)){
+			server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerBattery),slot_ServerBattery);
+		}
+		server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerCluster),slot_ServerCluster);
+		
+		server.OverrideAlarmPlayers(m_RaidAlarmPlayers);
+		server.SetHealth("","",GetHealth("",""));
+		
+		server.SetIsDeployed(true);
+		
+		server.RAFindAndLinkBaseItemsThread();
+		
+		GetGame().ObjectDelete(this);
 	}
 	
 	override bool HasDish(){
@@ -71,6 +84,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		}
 		return false;
 	}
+	
 	
 	override bool CanReceiveAttachment( EntityAI attachment, int slotId ) {
 		if (!m_IsDeployed){return false;}

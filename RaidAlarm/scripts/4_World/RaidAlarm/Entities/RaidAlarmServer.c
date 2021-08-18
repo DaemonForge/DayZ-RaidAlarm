@@ -4,15 +4,19 @@ class RaidAlarm_Dish extends ItemBase{}
 
 class RaidAlarm_Server extends RaidAlarm_Base{
 	
-	protected bool m_IsDeployed = false;
 	
 	protected int slot_ServerBattery = InventorySlots.INVALID;
+	protected int slot_ServerCOMSArray = InventorySlots.INVALID;
+	protected int slot_ServerCluster = InventorySlots.INVALID;
+	protected int slot_SatDish = InventorySlots.INVALID;
 	
 	protected int TimeOfLastDrain = 0;
 	
 	void RaidAlarm_Server(){
-		RegisterNetSyncVariableBool("m_IsDeployed");
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
+		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
+		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
+		slot_SatDish = InventorySlots.GetSlotIdFromString("ServerCluster");
 	}
 	
 	override bool NameOverride(out string output)
@@ -26,6 +30,14 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		}
         return super.NameOverride(output);
     }
+	
+	override bool CanReleaseAttachment(EntityAI attachment)
+	{
+		if (this.GetType() == "RaidAlarm_Server" && ( attachment.IsInherited(RaidAlarm_ServerCluster) ||  attachment.IsInherited(RaidAlarm_CommunicationsArray) )) {
+			return false;
+		}
+		return super.CanReleaseAttachment(attachment);
+	}
 	
 	bool HasDish(){
 		if (GetInventory() && RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"))){
@@ -100,36 +112,20 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	}
 	
 	
-	override bool OnStoreLoad( ParamsReadContext ctx, int version )
-	{
-		if ( !super.OnStoreLoad( ctx, version ) )
-			return false;
-		
-		if (!ctx.Read(m_IsDeployed)){
-			return false;
-		}
-
-		return true;
-	}
-	
-	override void OnStoreSave( ParamsWriteContext ctx )
-	{   
-		UpdateRABattery();
-		
-		super.OnStoreSave( ctx );
-		
-		ctx.Write(m_IsDeployed);
-	}
-	
-	
 	override bool CanPutInCargo( EntityAI parent )
 	{
-		return false;
+		if (this.GetType() == "RaidAlarm_Server"){
+			return false;
+		}		
+		return super.CanPutInCargo(parent));
 	}
 	
 	override bool CanPutIntoHands( EntityAI parent )
 	{
-		return false;
+		if (this.GetType() == "RaidAlarm_Server"){
+			return false;
+		}
+		return super.CanPutIntoHands(parent));
 	}
 	
 	

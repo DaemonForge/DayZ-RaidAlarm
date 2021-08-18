@@ -1,5 +1,7 @@
 class RaidAlarm_Base extends ItemBase {
 
+	protected bool m_IsDeployed = false;
+	
 	protected bool m_HasFindAndLinkQueued = false;
 	
 	protected bool m_HasRASyncedRequested = false;
@@ -9,6 +11,7 @@ class RaidAlarm_Base extends ItemBase {
 	protected autoptr RaidAlarmPlayers m_RaidAlarmPlayers;
 	
 	void RaidAlarm_Base(){
+		RegisterNetSyncVariableBool("m_IsDeployed");
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.DoFirstSync);
 	}
 	
@@ -23,6 +26,11 @@ class RaidAlarm_Base extends ItemBase {
 	
 	void OnSwitchOff(){
 	
+	}
+	
+	void OverrideAlarmPlayers( RaidAlarmPlayers raidAlarmPlayers){
+		if (!raidAlarmPlayers){return;}
+		Class.CastTo(m_RaidAlarmPlayers,raidAlarmPlayers);
 	}
 	
 	override void OnWorkStop()
@@ -54,7 +62,11 @@ class RaidAlarm_Base extends ItemBase {
 		super.AfterStoreLoad();		
 		SetSynchDirty();
 		m_HasFindAndLinkQueued = true;
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.RAFindAndLinkBaseItemsThread, Math.QRandomInt(3200,4800));
+		if (m_IsDeployed && GetGame().IsServer()){
+			Print("[RAIDALARM] Alarm is deployed is now linking closest base items");
+			SetIsDeployed(true);
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.RAFindAndLinkBaseItemsThread, Math.QRandomInt(3200,4800));
+		}
 	}
 	
 	void SetRAName(string name){
@@ -204,8 +216,27 @@ class RaidAlarm_Base extends ItemBase {
 		super.OnPlacementComplete( player, position, orientation );
 		
 		if ( GetGame().IsServer() ) {
+			Print("OnPlacementComplete" );
+			Print(this);
+			SetIsDeployed(true);
 			RAFindAndLinkBaseItemsThread();
 		}
+	}
+	
+	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
+	{
+		super.OnItemLocationChanged(old_owner, new_owner);
+		
+		if (GetGame().IsServer() && GetParent()){
+			Print("OnItemLocationChanged" );
+			Print(this);
+			SetIsDeployed(false);
+		}
+	}
+	
+	void SetIsDeployed(bool state = true){
+		m_IsDeployed = state;
+		SetSynchDirty();
 	}
 	
 	protected void SoundBellPlay() 
@@ -221,7 +252,9 @@ class RaidAlarm_Base extends ItemBase {
 		super.OnStoreSave( ctx );
 		
 		ctx.Write(m_RaidAlarmPlayers);
+		ctx.Write(m_IsDeployed);
 	}
+	
 	
 	override bool OnStoreLoad( ParamsReadContext ctx, int version )
 	{
@@ -232,6 +265,9 @@ class RaidAlarm_Base extends ItemBase {
 			return false;
 		}
 
+		if (!ctx.Read(m_IsDeployed)){
+			return false;
+		}
 		return true;
 	}
 	

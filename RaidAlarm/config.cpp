@@ -150,7 +150,7 @@ class cfgVehicles
 		hitpoints=8000;
 		itemSize[]={10,14};
 		physLayer = "item_large";
-		attachments[] = {"BatteryServer","DishAttachment"};
+		attachments[] = {"BatteryServer","ServerCluster","ServerCOMSArray","DishAttachment"};
 		carveNavmesh=1;
 		itemBehaviour=0;
 		heavyItem=1;
@@ -187,7 +187,7 @@ class cfgVehicles
 		scope=2;
 		displayName="Raid Alarm Power Supply";
 		descriptionShort="Raid Alarm";
-		model="RaidAlarm\data\ServerRack\RaidAlarm_PowerSupply.p3d";
+		model="RaidAlarm\data\ServerRack\ServerPowerSupply.p3d";
 		weight=8000;
 		hitpoints=6000;
 		slopeTolerance = 0.4;
