@@ -67,6 +67,7 @@ class CfgMods
 class cfgVehicles
 {
 	class Inventory_Base;
+	class Battery9V;
 	class TruckBattery: Inventory_Base
 	{
 		hiddenSelections[]=
@@ -78,7 +79,35 @@ class cfgVehicles
 			"DZ\vehicles\parts\data\truck_bat_co.paa"
 		};
 	};
-	
+	class RaidBellBattery: Battery9V
+	{
+		itemSize[]={1,1};
+		stackedUnit="w";
+		quantityBar=1;
+		varQuantityInit=50;
+		varQuantityMin=0;
+		varQuantityMax=50;
+		hiddenSelections[]=
+		{
+			"zbytek"
+		};
+		hiddenSelectionsTextures[]=
+		{
+			"RaidAlarm\data\Bell\Bell Alarm Battery_co.paa"
+		};
+		class EnergyManager
+		{
+			hasIcon=1;
+			switchOnAtSpawn=1;
+			isPassiveDevice=1;
+			energyStorageMax=50;
+			energyAtSpawn=50;
+			convertEnergyToQuantity=1;
+			reduceMaxEnergyByDamageCoef=1;
+			powerSocketsCount=1;
+			compatiblePlugTypes[]={1};
+		};
+	};
 	class RaidAlarm_ServerBattery: TruckBattery
 	{
 		displayName="Server Battery";
@@ -118,6 +147,73 @@ class cfgVehicles
 		itemSize[]={2,3};
 		hitpoints=200;
 	};
+	class ServerBoxKitTest : Inventory_Base
+	{
+		scope=2;
+		displayName="ServerBoxTest";
+		descriptionShort="";
+		model="\RaidAlarm\data\Box\ServerBox.p3d";
+		weight=1100;
+		itemSize[]={4,3};
+		hiddenSelections[]=
+		{
+			"box_1"
+		};
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1.0,
+							
+							{
+								"RaidAlarm\data\Box\Textures\ServerBox.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\Box\Textures\ServerBox.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\Box\Textures\Dmg\DmgServerBox.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\Box\Textures\Dmg\DmgServerBox.rvmat"
+							}
+						},
+						
+						{
+							0.0,
+							
+							{
+								"RaidAlarm\data\Box\Textures\Dmg\DmgServerBox Ruined.rvmat"
+							}
+						}
+					};
+				};
+			};
+		};
+	};
+	
 	class RaidAlarm_Bell : RaidAlarm_Base
 	{
 		scope=2;
@@ -129,13 +225,84 @@ class cfgVehicles
 		weight=1800;
 		itemSize[]={2,3};
 		rotationFlags=16;
+		hiddenSelections[]=
+		{
+			"Base",
+			"Bell",
+			"Hammer"
+		};
+		hiddenSelectionsTextures[]=
+		{
+			"RaidAlarm\data\Bell\Textures\Housing_co.paa",
+			"RaidAlarm\data\Bell\Textures\Bell_co.paa",
+			"RaidAlarm\data\Bell\Textures\Hammer_co.paa"
+		};
+		hiddenSelectionsMaterials[]=
+		{
+			"RaidAlarm\data\Bell\Textures\Housing.rvmat",
+			"RaidAlarm\data\Bell\Textures\Bell.rvmat",
+			"RaidAlarm\data\Bell\Textures\Hammer.rvmat"
+		};
 		class DamageSystem
 		{
 			class GlobalHealth
 			{
 				class Health
 				{
-					hitpoints = 300;
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1.0,
+							
+							{
+								"RaidAlarm\data\Bell\Textures\Housing.rvmat",
+								"RaidAlarm\data\Bell\Textures\Bell.rvmat",
+								"RaidAlarm\data\Bell\Textures\Hammer.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\Bell\Textures\Housing.rvmat",
+								"RaidAlarm\data\Bell\Textures\Bell.rvmat",
+								"RaidAlarm\data\Bell\Textures\Hammer.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\Bell\Textures\dmg\Dmg\HousingDmg.rvmat",
+								"RaidAlarm\data\Bell\Textures\dmg\BellDmg.rvmat",
+								"RaidAlarm\data\Bell\Textures\Hammer.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\Bell\Textures\dmg\Dmg\HousingDmg.rvmat",
+								"RaidAlarm\data\Bell\Textures\dmg\BellDmg.rvmat",
+								"RaidAlarm\data\Bell\Textures\Hammer.rvmat"
+							}
+						},
+						
+						{
+							0.0,
+							
+							{
+								"RaidAlarm\data\Bell\Textures\dmg\Dmg\HousingDmg Ruined.rvmat",
+								"RaidAlarm\data\Bell\Textures\dmg\Bell Ruined.rvmat",
+								"RaidAlarm\data\Bell\Textures\Hammer.rvmat"
+							}
+						}
+					};
 				};
 			};
 		};
@@ -177,7 +344,50 @@ class cfgVehicles
 			{
 				class Health
 				{
-					hitpoints = 8000;
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1.0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Ruined.rvmat"
+							}
+						}
+					};
 				};
 			};
 		};
@@ -247,7 +457,50 @@ class cfgVehicles
 			{
 				class Health
 				{
-					hitpoints = 6000;
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Ruined.rvmat"
+							}
+						}
+					};
 				};
 			};
 		};
@@ -272,7 +525,50 @@ class cfgVehicles
 			{
 				class Health
 				{
-					hitpoints = 6000;
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1.0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Ruined.rvmat"
+							}
+						}
+					};
 				};
 			};
 		};
@@ -298,7 +594,50 @@ class cfgVehicles
 			{
 				class Health
 				{
-					hitpoints = 6000;
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1.0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.0,
+							
+							{
+								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Ruined.rvmat"
+							}
+						}
+					};
 				};
 			};
 		};
@@ -329,7 +668,50 @@ class cfgVehicles
 			{
 				class Health
 				{
-					hitpoints = 200;
+					hitpoints=200;
+					healthLevels[]=
+					{
+						
+						{
+							1.0,
+							
+							{
+								"RaidAlarm\data\Dish Attachment\Textures\Antenna.rvmat"
+							}
+						},
+						
+						{
+							0.69999999,
+							
+							{
+								"RaidAlarm\data\Dish Attachment\Textures\Antenna.rvmat"
+							}
+						},
+						
+						{
+							0.5,
+							
+							{
+								"RaidAlarm\data\Dish Attachment\Textures\Dmg\Antenna Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.30000001,
+							
+							{
+								"RaidAlarm\data\Dish Attachment\Textures\Dmg\Antenna Dmg.rvmat"
+							}
+						},
+						
+						{
+							0.0,
+							
+							{
+								"RaidAlarm\data\Dish Attachment\Textures\Dmg\Antenna Dmg Ruined.rvmat"
+							}
+						}
+					};
 				};
 			};
 		};
