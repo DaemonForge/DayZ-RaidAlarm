@@ -2,14 +2,14 @@
 class RaidAlarm_ServerCluster extends ItemBase{}
 
 class RaidAlarm_CommunicationsArray extends ItemBase{
-	bool HasDish(){
+	bool HasDish() {
 		if (RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"))){
 			return true;
 		}
 		return false;
 	}
 	
-	RaidAlarm_Dish GetDish(){
+	RaidAlarm_Dish GetDish() {
 		return RaidAlarm_Dish.Cast(FindAttachmentBySlotName("DishAttachment"));
 	}
 	
@@ -29,25 +29,23 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 	
 	protected bool m_RaidAlarmDeleting = false;
 
-	void ~RaidAlarm_PowerSupply(){
+	void ~RaidAlarm_PowerSupply() {
 		//RemoveProxyPhysics("server_cluster");
 		//RemoveProxyPhysics("coms_array");
 	}
 	
-	override string GetAlarmSoundSet(){
+	override string GetAlarmSoundSet() {
 		//return "RaidAlarmBellShortRange_SoundShader";
 		return "RaidAlarmBellLongRange_SoundSet";
 	}
 	
-	override void EEItemDetached(EntityAI item, string slot_name)
-	{
+	override void EEItemDetached(EntityAI item, string slot_name) {
 		super.EEItemDetached(item, slot_name);
 		
 		RefreshPhysics();
 	}
 	
-	override void EEItemAttached(EntityAI item, string slot_name)
-	{
+	override void EEItemAttached(EntityAI item, string slot_name) {
 		super.EEItemAttached(item, slot_name);
 		
 		if (slot_name == "ServerCOMSArray" && GetGame().IsServer()){
@@ -58,7 +56,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		RefreshPhysics();
 	}
 	
-	void CreateAndTransferToServer(){
+	void CreateAndTransferToServer() {
 		RaidAlarm_Server server = RaidAlarm_Server.Cast( GetGame().CreateObject("RaidAlarm_Server", GetPosition() ) );
 		server.SetOrientation(GetOrientation());
 		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
@@ -80,7 +78,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
 	}
 	
-	override bool HasDish(){
+	override bool HasDish() {
 		RaidAlarm_CommunicationsArray comArray;
 		if (GetInventory() && Class.CastTo(comArray, GetInventory().FindAttachment(slot_ServerCOMSArray)) && comArray.HasDish()){
 			return true;
@@ -97,14 +95,14 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		return super.CanReceiveAttachment( attachment, slotId );
 	}
 	
-	bool HasServerCluster(){
+	bool HasServerCluster() {
 		if (slot_ServerCluster != InventorySlots.INVALID && GetInventory() && GetInventory().FindAttachment(slot_ServerCluster) != NULL){
 			return true;
 		}
 		return false;
 	}
 	
-	bool HasCommunicationArray(){
+	bool HasCommunicationArray() {
 		if (slot_ServerCOMSArray != InventorySlots.INVALID && GetInventory() && GetInventory().FindAttachment(slot_ServerCOMSArray) != NULL){
 			return true;
 		}
@@ -112,8 +110,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 	}
 	
 	
-	override bool CanReleaseAttachment(EntityAI attachment)
-	{
+	override bool CanReleaseAttachment(EntityAI attachment) {
 		if( HasCommunicationArray() && attachment.IsInherited(RaidAlarm_ServerCluster)) {
 			return false;
 		}
@@ -124,22 +121,19 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		return 300 * 1000;
 	}
 	
-	override bool CanSetOffAlarm(){	
+	override bool CanSetOffAlarm() {	
 		return (HasServerCluster() && HasCommunicationArray() && HasDish() && GetCompEM().CanWork(1) && m_IsDeployed);
 	}
 
-	override bool CanPutInCargo( EntityAI parent )
-	{
+	override bool CanPutInCargo( EntityAI parent ) {
 		return (super.CanPutInCargo( parent ) && !HasServerCluster() && !HasCommunicationArray());
 	}
 	
-	override bool CanPutIntoHands( EntityAI parent )
-	{
+	override bool CanPutIntoHands( EntityAI parent ) {
 		return (super.CanPutIntoHands( parent ) && !HasServerCluster() && !HasCommunicationArray());
 	}
 		
-	override void RefreshPhysics()
-	{
+	override void RefreshPhysics() {
 		super.RefreshPhysics();
 		/*Print("RefreshPhysics");
 		
@@ -161,8 +155,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		Print("RefreshPhysics end");*/
 	}
 		
-	protected void HideRASimpleSelection(string selectionName, bool hide = true)
-    {
+	protected void HideRASimpleSelection(string selectionName, bool hide = true) {
         TStringArray selectionNames = new TStringArray;
         ConfigGetTextArray("simpleHiddenSelections",selectionNames);
         int selectionId = selectionNames.Find(selectionName);
@@ -170,7 +163,7 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
     };
 	
 	
-	override bool IsFullServer(){
+	override bool IsFullServer() {
 		return false;
 	}
 }

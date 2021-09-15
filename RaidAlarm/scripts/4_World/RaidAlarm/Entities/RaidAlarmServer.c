@@ -1,5 +1,5 @@
-
 class RaidAlarm_ServerBattery extends TruckBattery{}
+
 class RaidAlarm_Dish extends ItemBase{}
 
 class RaidAlarm_Server extends RaidAlarm_Base{
@@ -12,15 +12,14 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	protected int TimeOfLastDrain = 0;
 	
-	void RaidAlarm_Server(){
+	void RaidAlarm_Server() {
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
 		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
 		slot_ServerCluster = InventorySlots.GetSlotIdFromString("ServerCluster");
 		slot_SatDish = InventorySlots.GetSlotIdFromString("DishAttachment");
 	}
 	
-	override bool NameOverride(out string output)
-    {
+	override bool NameOverride(out string output) {
         if(GetGame().IsClient() && CanSetOffAlarm()) {
             output = ConfigGetString("displayName") + " (ONLINE)";
             return true;
@@ -31,8 +30,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
         return super.NameOverride(output);
     }
 	
-	override bool CanReleaseAttachment(EntityAI attachment)
-	{
+	override bool CanReleaseAttachment(EntityAI attachment) {
 		if (IsFullServer() && ( attachment.IsInherited(RaidAlarm_ServerCluster) ||  attachment.IsInherited(RaidAlarm_CommunicationsArray) )) {
 			return false;
 		}
@@ -88,8 +86,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		}
 	}
 
-	override void EEItemDetached(EntityAI item, string slot_name)
-	{
+	override void EEItemDetached(EntityAI item, string slot_name) {
 		super.EEItemDetached(item, slot_name);
 		
 		
@@ -100,8 +97,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		}
 	}
 		
-	override void EEItemAttached(EntityAI item, string slot_name)
-	{
+	override void EEItemAttached(EntityAI item, string slot_name) {
 		super.EEItemAttached(item, slot_name);
 				
 		if (slot_name == "BatteryServer" && item){
@@ -112,16 +108,14 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	}
 	
 	
-	override bool CanPutInCargo( EntityAI parent )
-	{
+	override bool CanPutInCargo( EntityAI parent ) {
 		if (IsFullServer()){
 			return false;
 		}		
 		return super.CanPutInCargo(parent));
 	}
 	
-	override bool CanPutIntoHands( EntityAI parent )
-	{
+	override bool CanPutIntoHands( EntityAI parent ) {
 		if (IsFullServer()){
 			return false;
 		}
@@ -129,7 +123,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	}
 	
 	
-	RaidAlarm_ServerBattery GetServerBattery(){
+	RaidAlarm_ServerBattery GetServerBattery() {
 		return RaidAlarm_ServerBattery.Cast(GetInventory().FindAttachment(slot_ServerBattery));
 	}
 	
@@ -141,11 +135,14 @@ class RaidAlarm_Server extends RaidAlarm_Base{
         if (category_name  == "Servers" && GetGame().IsClient() && IsFullServer()) {
             return false;
 		}
+        if (category_name  == "Communcations" && GetGame().IsClient() && !IsFullServer()) {
+            return false;
+		}
         return super.CanDisplayAttachmentCategory(category_name);
     }
 	
 	
-	void CreateAndTransferToPowerSuppy(){
+	void CreateAndTransferToPowerSuppy() {
 		RaidAlarm_PowerSupply server = RaidAlarm_PowerSupply.Cast( GetGame().CreateObject("RaidAlarm_PowerSupply", GetPosition() ) );
 		server.SetOrientation(GetOrientation());
 		

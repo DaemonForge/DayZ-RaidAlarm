@@ -10,55 +10,51 @@ class RaidAlarm_Base extends ItemBase {
 	
 	protected autoptr RaidAlarmPlayers m_RaidAlarmPlayers;
 	
-	void RaidAlarm_Base(){
+	void RaidAlarm_Base() {
 		RegisterNetSyncVariableBool("m_IsDeployed");
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.DoFirstSync);
 	}
 	
-	override void OnWorkStart()
-	{
+	override void OnWorkStart() {
 		Print("[RAIDALARM] On Work Start");
 	}
 	
-	void OnSwitchOn(){
+	void OnSwitchOn() {
 	
 	}
 	
-	void OnSwitchOff(){
+	void OnSwitchOff() {
 	
 	}
 	
-	void OverrideAlarmPlayers( RaidAlarmPlayers raidAlarmPlayers){
+	void OverrideAlarmPlayers( RaidAlarmPlayers raidAlarmPlayers) {
 		if (!raidAlarmPlayers){return;}
 		Class.CastTo(m_RaidAlarmPlayers,raidAlarmPlayers);
 	}
 	
-	override void OnWorkStop()
-	{
+	override void OnWorkStop() {
 		Print("[RAIDALARM] On Work Stop");
 		
 	}
 	
-	bool IsWorking()
-	{
+	bool IsWorking() {
 		if (GetCompEM() && GetCompEM().CanWork())
 			return true;
 		return false;
 	}
 	
 	
-	bool CanSetOffAlarm(){
+	bool CanSetOffAlarm() {
 		return true;
 	}
 	
-	void ~RaidAlarm_Base(){
+	void ~RaidAlarm_Base() {
 		if (m_HasFindAndLinkQueued){
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(this.RAFindAndLinkBaseItemsThread);
 		}
 	}
 	
-	override void AfterStoreLoad()
-	{	
+	override void AfterStoreLoad() {	
 		super.AfterStoreLoad();		
 		SetSynchDirty();
 		m_HasFindAndLinkQueued = true;
@@ -69,14 +65,14 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
-	void SetRAName(string name){
+	void SetRAName(string name) {
 		if (!m_RaidAlarmPlayers){
 			m_RaidAlarmPlayers = new RaidAlarmPlayers;
 		}
 		m_RaidAlarmPlayers.SetName(name);
 	}
 	
-	bool AddRAPlayer(string guid, string name){
+	bool AddRAPlayer(string guid, string name) {
 		if (!m_RaidAlarmPlayers){
 			m_RaidAlarmPlayers = new RaidAlarmPlayers;
 		}
@@ -88,7 +84,7 @@ class RaidAlarm_Base extends ItemBase {
 	}
 	
 	
-	bool RemoveRAPlayer(string guid){
+	bool RemoveRAPlayer(string guid) {
 		if (!m_RaidAlarmPlayers){
 			m_RaidAlarmPlayers = new RaidAlarmPlayers;
 		}
@@ -99,14 +95,14 @@ class RaidAlarm_Base extends ItemBase {
 		return false;
 	}
 	
-	bool RACheckPlayer(string guid){
+	bool RACheckPlayer(string guid) {
 		if (!m_RaidAlarmPlayers){
 			m_RaidAlarmPlayers = new RaidAlarmPlayers;
 		}
 		return m_RaidAlarmPlayers.CheckPlayer(guid);
 	}	
 	
-	void RAFindAndLinkBaseItemsThread(){
+	void RAFindAndLinkBaseItemsThread() {
 		m_HasFindAndLinkQueued = false;
 		if (GetGame().IsServer()){
 			thread RAFindAndLinkBaseItems();
@@ -115,7 +111,7 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
-	protected void RAFindAndLinkBaseItems(){
+	protected void RAFindAndLinkBaseItems() {
 		array<Object> objects = new array<Object>;
 		array<CargoBase> proxyCargos = new array<CargoBase>;
 		GetGame().GetObjectsAtPosition3D(GetPosition(), GetRARadius(), objects, proxyCargos);
@@ -134,7 +130,7 @@ class RaidAlarm_Base extends ItemBase {
 		return 120 * 1000;
 	}
 	
-	bool SetOffAlarm(){
+	bool SetOffAlarm() {
 		int curTime = GetGame().GetTime();
 		if (curTime < m_LastAlarmTriggered || !CanSetOffAlarm()){
 			return false;
@@ -153,19 +149,18 @@ class RaidAlarm_Base extends ItemBase {
 	}
 	
 	
-	int GetRARadius(){
+	int GetRARadius() {
 		return 3.5;
 	}
 	
-	void DoFirstSync(){
-		if (GetGame().IsClient() && !m_HasRASyncedRequested){
+	void DoFirstSync() {
+		if (GetGame().IsClient() && !m_HasRASyncedRequested) {
 			m_HasRASyncedRequested = true;
 			SyncAlarm();
 		}
 	}
 	
-	void SyncAlarm(PlayerIdentity identity = NULL)
-	{
+	void SyncAlarm(PlayerIdentity identity = NULL) {
 		if ( GetGame().IsServer() ) {
 			SetSynchDirty();
 			RPCSingleParam(RAIDALARMRPCs.SEND_DATA, new Param1< RaidAlarmPlayers >(m_RaidAlarmPlayers), true, identity);
@@ -175,12 +170,12 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
-	string GetAlarmSoundSet(){
-		return "RaidAlarmBellShortRange_SoundShader";
+	string GetAlarmSoundSet() {
+		return "RaidAlarmBellShortRange_SoundSet";
 		//return "RaidAlarmBellLongRange_SoundSet";
 	}
 	
-	protected void TriggerAlarmSound(){
+	protected void TriggerAlarmSound() {
 		if (GetGame().IsServer()){
 			GetGame().RPCSingleParam(this, RAIDALARMRPCs.TIGGERALARMSOUND, new Param2<string,vector>( GetAlarmSoundSet(), GetPosition() ), true, NULL);
 		} else {
@@ -211,8 +206,7 @@ class RaidAlarm_Base extends ItemBase {
 		return true;
 	}
 	
-	override void OnPlacementComplete( Man player, vector position = "0 0 0", vector orientation = "0 0 0" )
-	{
+	override void OnPlacementComplete( Man player, vector position = "0 0 0", vector orientation = "0 0 0" ) {
 		super.OnPlacementComplete( player, position, orientation );
 		
 		if ( GetGame().IsServer() ) {
@@ -223,8 +217,7 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
-	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
-	{
+	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner) {
 		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		if (GetGame().IsServer() && GetParent()){
@@ -234,21 +227,19 @@ class RaidAlarm_Base extends ItemBase {
 		}
 	}
 	
-	void SetIsDeployed(bool state = true){
+	void SetIsDeployed(bool state = true) {
 		m_IsDeployed = state;
 		SetSynchDirty();
 	}
 	
-	protected void SoundBellPlay() 
-	{
+	protected void SoundBellPlay() {
 		if (GetGame().IsClient()){
 			EffectSound sound =	SEffectManager.PlaySound( "RaidAlarmBellLongRange_SoundSet", GetPosition() );
 			sound.SetSoundAutodestroy( true );
 		}
 	}
 	
-	override void OnStoreSave( ParamsWriteContext ctx )
-	{   
+	override void OnStoreSave( ParamsWriteContext ctx ) {   
 		super.OnStoreSave( ctx );
 		
 		ctx.Write(m_RaidAlarmPlayers);
@@ -256,8 +247,7 @@ class RaidAlarm_Base extends ItemBase {
 	}
 	
 	
-	override bool OnStoreLoad( ParamsReadContext ctx, int version )
-	{
+	override bool OnStoreLoad( ParamsReadContext ctx, int version ) {
 		if ( !super.OnStoreLoad( ctx, version ) )
 			return false;
 		
@@ -279,3 +269,4 @@ class RaidAlarm_Base extends ItemBase {
 		
 	}
 }
+
