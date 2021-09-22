@@ -4,5 +4,6 @@ modded class ActionConstructor
     {
         super.RegisterActions(actions);
         actions.Insert(LinkAndAddDiscord); 
+        actions.Insert(ActionDismantleServer); 
     }
 }

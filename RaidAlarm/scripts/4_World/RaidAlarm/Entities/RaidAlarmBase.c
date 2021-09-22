@@ -261,7 +261,7 @@ class RaidAlarm_Base extends ItemBase {
 		return true;
 	}
 	
-	void SetActions() {
+	override void SetActions() {
 		super.SetActions();
 		AddAction(LinkAndAddDiscord);
 		AddAction(ActionTogglePlaceObject);

@@ -147,7 +147,8 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		server.SetOrientation(GetOrientation());
 		
 		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
-		server.ServerTakeEntityAsAttachmentEx(comarray, slot_ServerCOMSArray);
+		server.GetInventory().DropEntity(InventoryMode.SERVER, server, comarray);
+		//server.ServerTakeEntityAsAttachmentEx(comarray, slot_ServerCOMSArray);
 		if (GetInventory().FindAttachment(slot_SatDish)){
 			comarray.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_SatDish), slot_SatDish);
 		}
@@ -160,6 +161,11 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		server.SetIsDeployed(true);
 		server.RAFindAndLinkBaseItemsThread();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
+	}
+	
+	override void SetActions() {
+		super.SetActions();
+		AddAction(ActionDismantleServer);
 	}
 	
 }
