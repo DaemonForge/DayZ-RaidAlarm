@@ -1,4 +1,3 @@
-
 class RaidAlarm_ServerCluster extends ItemBase{}
 
 class RaidAlarm_CommunicationsArray extends ItemBase{
@@ -74,8 +73,8 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 		
 		server.SetIsDeployed(true);
 		
-		server.RAFindAndLinkBaseItemsThread();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(server.RAFindAndLinkBaseItemsThread,300);
 	}
 	
 	override bool HasDish() {
@@ -88,8 +87,8 @@ class RaidAlarm_PowerSupply extends RaidAlarm_Server {
 	
 	
 	override bool CanReceiveAttachment( EntityAI attachment, int slotId ) {
-		if (!m_IsDeployed){return false;}
-		if( !HasServerCluster() && slotId == slot_ServerCOMSArray ){
+		if ( !m_IsDeployed ){return false;}
+		if ( !HasServerCluster() && slotId == slot_ServerCOMSArray ){
 			return false;
 		}
 		return super.CanReceiveAttachment( attachment, slotId );

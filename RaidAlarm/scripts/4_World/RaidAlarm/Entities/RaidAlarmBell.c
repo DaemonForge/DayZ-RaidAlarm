@@ -16,4 +16,11 @@ class RaidAlarm_Bell extends RaidAlarm_Base{
 		return "RaidAlarmBellShortRange_SoundSet";
 	}
 	
+	override bool ShouldTrigger(){
+		return (Math.QRandomInt(0, 100) <= GetRaidAlarmConfig().ChanceToTriggerBell );
+	}
+	
+	override int TriggerDelay(){
+		return GetRaidAlarmConfig().TriggerDelayBell;
+	}
 }

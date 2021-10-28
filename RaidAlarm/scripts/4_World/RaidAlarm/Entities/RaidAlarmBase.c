@@ -10,9 +10,11 @@ class RaidAlarm_Base extends ItemBase {
 	
 	protected autoptr RaidAlarmPlayers m_RaidAlarmPlayers;
 	
+	protected autoptr Timer m_TriggerDelayTimer;
+	
 	void RaidAlarm_Base() {
 		RegisterNetSyncVariableBool("m_IsDeployed");
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.DoFirstSync);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this.RaidAlarmBaseInit);
 	}
 	
 	override void OnWorkStart() {
@@ -127,22 +129,48 @@ class RaidAlarm_Base extends ItemBase {
 	}
 
 	int GetMinTimeBetweenTiggers() {
-		return 120 * 1000;
+		return 300 * 1000;
 	}
 	
-	bool SetOffAlarm() {
+	int TriggerDelay(){
+		return GetRaidAlarmConfig().TriggerDelayServer;
+	}
+	
+	bool ShouldTrigger(){
+		return true;
+	}
+	
+	bool TriggerAlarm(bool force = false){
+		if (!ShouldTrigger() && !force){
+			return false;
+		}
+		if (!m_TriggerDelayTimer){
+			m_TriggerDelayTimer = new Timer;
+		}
+		if (m_TriggerDelayTimer.IsRunning()){
+			return false;
+		}
+		m_TriggerDelayTimer.Run(TriggerDelay(),this,"SetOffAlarm");
+		return true;
+	}
+	
+	protected bool SetOffAlarm() {
 		int curTime = GetGame().GetTime();
 		if (curTime < m_LastAlarmTriggered || !CanSetOffAlarm()){
 			return false;
 		}
 		m_LastAlarmTriggered = curTime + GetMinTimeBetweenTiggers();
 		autoptr TStringMap players = m_RaidAlarmPlayers.GetPlayers();
-		TriggerAlarmSound();
+		if (GetRaidAlarmConfig().IngameSoundAlarm){
+			TriggerAlarmSound();
+		}
 		for (int i = 0; i < players.Count(); i++){
-			UApi().ds().UserSend(players.GetKey(i), "You are being Raided");
+			if (GetRaidAlarmConfig().DiscordAlarm){
+				UApi().ds().UserSend(players.GetKey(i), GetRaidAlarmConfig().DiscordAlarmMsg);
+			}
 			PlayerBase player;
 			if ( Class.CastTo( player, UApi().FindPlayer(players.GetKey(i)) ) && player.GetIdentity()  ) {
-				NotificationSystem.CreateNotification(new StringLocaliser("Raid Alarm"), new StringLocaliser("You are being raided"), "RaidAlarm\\data\\Images\\SoundOn.edds", ARGB(240, 153, 101, 244), 15, player.GetIdentity());
+				NotificationSystem.CreateNotification(new StringLocaliser("Raid Alarm"), new StringLocaliser(GetRaidAlarmConfig().DiscordAlarmMsg), "RaidAlarm\\data\\Images\\SoundOn.edds", ARGB(240, 153, 101, 244), 15, player.GetIdentity());
 			}
 		}
 		return true;
@@ -153,11 +181,18 @@ class RaidAlarm_Base extends ItemBase {
 		return 3.5;
 	}
 	
-	void DoFirstSync() {
+	void RaidAlarmBaseInit() {
 		if (GetGame().IsClient() && !m_HasRASyncedRequested) {
 			m_HasRASyncedRequested = true;
 			SyncAlarm();
 		}
+		if (GetGame().IsServer()){
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.RaidAlarmDelayedInit, 30000, false);
+		}
+	}
+	
+	void RaidAlarmDelayedInit(){
+		SetAllowDamage(GetRaidAlarmConfig().CanDestroy);
 	}
 	
 	void SyncAlarm(PlayerIdentity identity = NULL) {
@@ -241,7 +276,11 @@ class RaidAlarm_Base extends ItemBase {
 	
 	override void OnStoreSave( ParamsWriteContext ctx ) {   
 		super.OnStoreSave( ctx );
-		
+		bool triggerAlarm = false;
+		if (m_TriggerDelayTimer && m_TriggerDelayTimer.IsRunning()){
+			triggerAlarm = true;
+		}
+		ctx.Write(triggerAlarm);
 		ctx.Write(m_RaidAlarmPlayers);
 		ctx.Write(m_IsDeployed);
 	}
@@ -250,6 +289,10 @@ class RaidAlarm_Base extends ItemBase {
 	override bool OnStoreLoad( ParamsReadContext ctx, int version ) {
 		if ( !super.OnStoreLoad( ctx, version ) )
 			return false;
+		bool triggerAlarm = false;
+		if (!ctx.Read(triggerAlarm)){
+			return false;
+		}
 		
 		if (!ctx.Read(m_RaidAlarmPlayers)){
 			return false;
@@ -257,6 +300,9 @@ class RaidAlarm_Base extends ItemBase {
 
 		if (!ctx.Read(m_IsDeployed)){
 			return false;
+		}
+		if (triggerAlarm){
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.TriggerAlarm, 1000, false, true);
 		}
 		return true;
 	}

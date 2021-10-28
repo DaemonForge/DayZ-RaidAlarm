@@ -12,6 +12,14 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	
 	protected int TimeOfLastDrain = 0;
 	
+	bool CanDismantle(){
+		if (!GetRaidAlarmConfig().CanDestroy && m_TriggerDelayTimer && m_TriggerDelayTimer.IsRunning()){
+			return false;
+		}
+		return true;
+	}
+	
+	
 	void RaidAlarm_Server() {
 		slot_ServerBattery = InventorySlots.GetSlotIdFromString("BatteryServer");
 		slot_ServerCOMSArray = InventorySlots.GetSlotIdFromString("ServerCOMSArray");
@@ -30,6 +38,15 @@ class RaidAlarm_Server extends RaidAlarm_Base{
         return super.NameOverride(output);
     }
 	
+	
+	bool DescriptionOverride(out string output)
+	{
+		if (GetGame().IsClient() && !HasOpenSky() && GetRaidAlarmConfig().RadioDishNeedsOpenSky){
+			output = ConfigGetString("descriptionShort") + " | WARNING: Can Not Connect to Satellite";
+			return true;
+		}
+		return super.DescriptionOverride(output);
+	}
 	override bool CanReleaseAttachment(EntityAI attachment) {
 		if (IsFullServer() && ( attachment.IsInherited(RaidAlarm_ServerCluster) ||  attachment.IsInherited(RaidAlarm_CommunicationsArray) )) {
 			return false;
@@ -53,8 +70,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		return "RaidAlarmBellLongRange_SoundSet";
 	}
 	
-	override void AfterStoreLoad()
-	{	
+	override void AfterStoreLoad() {	
 		super.AfterStoreLoad();	
 		TimeOfLastDrain = GetGame().GetTime();
 	}
@@ -64,8 +80,12 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 	}
 	
 	override bool CanSetOffAlarm(){	
-		return (HasDish() && GetCompEM().CanWork(1) && m_IsDeployed);
+		return (HasDish() && (GetCompEM().CanWork(1) || !GetRaidAlarmConfig().RequireBattery) && (HasOpenSky() || !GetRaidAlarmConfig().RadioDishNeedsOpenSky) && m_IsDeployed);
 	}
+	
+	bool HasOpenSky() {
+		return !MiscGameplayFunctions.IsUnderRoof( this );
+    }
 	
 	void UpdateRABattery(){
 		int curtime = GetGame().GetTime();
@@ -131,11 +151,22 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		return true;
 	}
 	
+	override bool ShouldTrigger(){
+		return (Math.QRandomInt(0, 100) <= GetRaidAlarmConfig().ChanceToTriggerServer );
+	}
+	
+	override int TriggerDelay(){
+		return GetRaidAlarmConfig().TriggerDelayServer;
+	}
+	
 	override bool CanDisplayAttachmentCategory(string category_name) {
         if (category_name  == "Servers" && GetGame().IsClient() && IsFullServer()) {
             return false;
 		}
         if (category_name  == "Communcations" && GetGame().IsClient() && !IsFullServer()) {
+            return false;
+		}
+        if (category_name  == "Power" && GetGame().IsClient() && !GetRaidAlarmConfig().RequireBattery) {
             return false;
 		}
         return super.CanDisplayAttachmentCategory(category_name);
@@ -147,7 +178,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		server.SetOrientation(GetOrientation());
 		
 		RaidAlarm_CommunicationsArray comarray = RaidAlarm_CommunicationsArray.Cast(GetInventory().FindAttachment(slot_ServerCOMSArray));
-		server.GetInventory().DropEntity(InventoryMode.SERVER, server, comarray);
+		this.GetInventory().DropEntity(InventoryMode.SERVER, this, comarray);
 		//server.ServerTakeEntityAsAttachmentEx(comarray, slot_ServerCOMSArray);
 		if (GetInventory().FindAttachment(slot_SatDish)){
 			comarray.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_SatDish), slot_SatDish);
@@ -159,13 +190,18 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		server.OverrideAlarmPlayers(m_RaidAlarmPlayers);
 		server.SetHealth("","",GetHealth("",""));
 		server.SetIsDeployed(true);
-		server.RAFindAndLinkBaseItemsThread();
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(server.RAFindAndLinkBaseItemsThread,300);
 	}
 	
+	
+}
+
+modded class Wrench extends Inventory_Base {
+
+
 	override void SetActions() {
 		super.SetActions();
 		AddAction(ActionDismantleServer);
 	}
-	
 }
