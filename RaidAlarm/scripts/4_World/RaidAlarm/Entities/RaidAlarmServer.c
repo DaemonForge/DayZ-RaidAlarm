@@ -16,7 +16,7 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		if (!GetRaidAlarmConfig().CanDestroy && m_TriggerDelayTimer && m_TriggerDelayTimer.IsRunning()){
 			return false;
 		}
-		return true;
+		return IsDeployed();
 	}
 	
 	
@@ -189,9 +189,8 @@ class RaidAlarm_Server extends RaidAlarm_Base{
 		server.ServerTakeEntityAsAttachmentEx(GetInventory().FindAttachment(slot_ServerCluster),slot_ServerCluster);
 		server.OverrideAlarmPlayers(m_RaidAlarmPlayers);
 		server.SetHealth("","",GetHealth("",""));
-		server.SetIsDeployed(true);
+		server.SetIsDeployed(false);
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, this);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(server.RAFindAndLinkBaseItemsThread,300);
 	}
 	
 	

@@ -350,12 +350,10 @@ class cfgVehicles
 						
 						{
 							1.0,
-							
 							{
 								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
 							}
 						},
-						
 						{
 							0.69999999,
 							
@@ -363,10 +361,8 @@ class cfgVehicles
 								"RaidAlarm\data\ServerRack\Textures\Radio Server Rack.rvmat"
 							}
 						},
-						
 						{
 							0.5,
-							
 							{
 								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Dmg.rvmat"
 							}
@@ -494,7 +490,7 @@ class cfgVehicles
 						},
 						
 						{
-							0,
+							0.0,
 							
 							{
 								"RaidAlarm\data\ServerRack\Textures\Dmg\Radio Server Rack Ruined.rvmat"

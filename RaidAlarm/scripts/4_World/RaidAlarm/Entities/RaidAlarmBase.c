@@ -61,7 +61,6 @@ class RaidAlarm_Base extends ItemBase {
 		SetSynchDirty();
 		m_HasFindAndLinkQueued = true;
 		if (m_IsDeployed && GetGame().IsServer()){
-			Print("[RAIDALARM] Alarm is deployed is now linking closest base items");
 			SetIsDeployed(true);
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.RAFindAndLinkBaseItemsThread, Math.QRandomInt(3200,4800));
 		}
@@ -245,8 +244,6 @@ class RaidAlarm_Base extends ItemBase {
 		super.OnPlacementComplete( player, position, orientation );
 		
 		if ( GetGame().IsServer() ) {
-			Print("OnPlacementComplete" );
-			Print(this);
 			SetIsDeployed(true);
 			RAFindAndLinkBaseItemsThread();
 		}
@@ -256,8 +253,6 @@ class RaidAlarm_Base extends ItemBase {
 		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		if (GetGame().IsServer() && GetParent()){
-			Print("OnItemLocationChanged" );
-			Print(this);
 			SetIsDeployed(false);
 		}
 	}
@@ -265,6 +260,10 @@ class RaidAlarm_Base extends ItemBase {
 	void SetIsDeployed(bool state = true) {
 		m_IsDeployed = state;
 		SetSynchDirty();
+	}
+	
+	bool IsDeployed(){
+		return m_IsDeployed;
 	}
 	
 	protected void SoundBellPlay() {
@@ -305,6 +304,14 @@ class RaidAlarm_Base extends ItemBase {
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.TriggerAlarm, 1000, false, true);
 		}
 		return true;
+	}
+	
+	override bool CanPutInCargo( EntityAI parent ) {
+		return (super.CanPutInCargo( parent ) && !m_IsDeployed);
+	}
+	
+	override bool CanPutIntoHands( EntityAI parent ) {
+		return (super.CanPutIntoHands( parent ) && !m_IsDeployed);
 	}
 	
 	override void SetActions() {
