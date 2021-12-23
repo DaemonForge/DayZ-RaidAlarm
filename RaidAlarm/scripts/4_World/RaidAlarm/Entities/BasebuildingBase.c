@@ -16,7 +16,7 @@ modded class BaseBuildingBase extends ItemBase
 		super.EEItemDetached(item, slot_name);
 		string itemType = item.GetType();
 		itemType.ToLower();
-		if (item.IsRuined() && itemType == "codelock"){
+		if (item.IsRuined() && (itemType == "codelock" || itemType == "Padlock_Heavy" || itemType == "Padlock" || itemType == "CombinationLock" || itemType == "CombinationLock4")){
 			SetOffAlarm();
 		}
 	}
