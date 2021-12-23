@@ -4,4 +4,10 @@ modded class MissionServer extends MissionBase
 		super.UniversalApiReady();
 		GetRaidAlarmConfig();
 	}
+	
+	override void OnMissionStart()
+	{
+		super.OnMissionStart();
+	}
+	
 }

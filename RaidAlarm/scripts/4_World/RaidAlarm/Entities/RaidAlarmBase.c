@@ -128,7 +128,7 @@ class RaidAlarm_Base extends ItemBase {
 	}
 
 	int GetMinTimeBetweenTiggers() {
-		return 300 * 1000;
+		return GetRaidAlarmConfig().MinTimeBetweenTiggers * 1000;
 	}
 	
 	int TriggerDelay(){
