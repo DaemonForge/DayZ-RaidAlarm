@@ -62,7 +62,7 @@ class RaidAlarm_Base extends ItemBase {
 		m_HasFindAndLinkQueued = true;
 		if (m_IsDeployed && GetGame().IsServer()){
 			SetIsDeployed(true);
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.RAFindAndLinkBaseItemsThread, Math.QRandomInt(3200,4800));
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.RAFindAndLinkBaseItemsThread, Math.RandomInt(3200,4800));
 		}
 	}
 	
